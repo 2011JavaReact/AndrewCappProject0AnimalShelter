@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.animalshelter.dao.UserDB;
 import com.animalshelter.model.User;
-import com.animalshelter.repository.UserDB;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
