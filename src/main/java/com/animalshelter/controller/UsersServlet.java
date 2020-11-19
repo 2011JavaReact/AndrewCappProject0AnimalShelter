@@ -36,7 +36,9 @@ public class UsersServlet extends HttpServlet {
 		UserDB userDB = new UserDB();
 		ArrayList<User> users = userDB.CreateUserDB();
 		
-//		System.out.println("CreateUser index 0: " + userDB.CreateUserDB().get(0).toString());	
+//		System.out.println("CreateUser index 0: " + userDB.CreateUserDB().get(0).toString());
+		// objectMapper is using the getter methods in the User class to write JSON values...
+		System.out.println("ObjectMapper writeValue: " + objectMapper.writeValueAsString(users.get(1)).toString());
 		response.getWriter().append(objectMapper.writeValueAsString(users));
 	}
 
