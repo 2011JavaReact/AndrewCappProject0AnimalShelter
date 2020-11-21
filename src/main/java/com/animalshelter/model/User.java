@@ -1,62 +1,81 @@
-package com.AnimalShelter;
+package com.animalshelter.model;
 
 import java.util.ArrayList;
 
 public class User {
 	
-	static ArrayList<User> users = new ArrayList<User>();
-	
-	private int id;
-	private String firstName, lastName, username, password, role, createdAt, updatedAt;
+	private int userId;
+	private String firstName, lastName, username, password;
+	private Role role;
 	
 	public User() {
-		this.id = 0;
+
 	}
 	
-	public User(int id, String firstName, String lastName, String username, String password, String role, String createdAt, String updatedAt) {
-		this.id = id;
+	public User(int userId, String firstName, String lastName, String username) {
+		this.userId = userId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
-		this.password = password;
+	}
+	
+	public User(int userId, String firstName, String lastName, String username, Role role) {
+		this.userId = userId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.username = username;
 		this.role = role;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		
-		if (id > 0) { users.add(this); };
-		
+								
 	}
-	
-	public void setField (String field, String value) {
-		switch (field) {
-		case "firstName":
-			this.firstName = value;
-			break;
-		case "lastName":
-			this.lastName = value;
-			break;
-		case "username":
-			this.username = value;
-			break;
-		case "password":
-			this.password = value;
-			break;
-		case "role":
-			this.role = value;
-			break;
-		default:
-			System.out.println("No property found for: " + field);
-		}
+
+	public int getUserId() {
+		return userId;
 	}
-	
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
 	public String getFirstName() {
-		return this.firstName;
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
 	}
 	
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Role getRole() {
+		return this.role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
 	@Override
-	
 	public String toString() {
-		return "UserId: " + this.id + " " + "Name: " + this.firstName + " " + this.lastName;
+		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", username="
+				+ username + ", password=" + password + ", role=" + role + "]";
 	}
-	
+		
 }

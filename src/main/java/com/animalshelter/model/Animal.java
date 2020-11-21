@@ -1,4 +1,4 @@
-package com.AnimalShelter;
+package com.animalshelter.model;
 
 public class Animal {
 

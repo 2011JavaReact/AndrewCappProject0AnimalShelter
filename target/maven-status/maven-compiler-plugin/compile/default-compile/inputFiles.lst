@@ -1,4 +1,11 @@
-/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/AnimalShelter/User.java
-/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/AnimalShelter/Animal.java
-/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/AnimalShelter/StartAnimalShelter.java
-/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/AnimalShelter/MyServlet.java
+/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/animalshelter/util/JDBCUtility.java
+/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/animalshelter/model/Animal.java
+/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/animalshelter/dao/DatabaseUserDAO.java
+/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/animalshelter/controller/UsersServlet.java
+/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/animalshelter/dao/UserDB.java
+/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/animalshelter/model/User.java
+/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/animalshelter/StartAnimalShelter.java
+/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/animalshelter/model/Role.java
+/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/animalshelter/service/UserService.java
+/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/animalshelter/dao/DatabaseAnimalDAO.java
+/Users/acapp5K1/Desktop/Project0AnimalShelter/src/main/java/com/animalshelter/controller/HomeServlet.java
