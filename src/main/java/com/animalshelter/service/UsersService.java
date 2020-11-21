@@ -8,10 +8,12 @@ import com.animalshelter.dao.DatabaseUserDAO;
 import com.animalshelter.exception.DuplicateUsernameException;
 import com.animalshelter.exception.RoleNotFoundException;
 import com.animalshelter.exception.UserNotCreatedException;
+import com.animalshelter.exception.UserNotDeletedException;
 import com.animalshelter.exception.UserNotFoundException;
+import com.animalshelter.exception.UserNotUpdatedException;
 import com.animalshelter.model.Role;
 import com.animalshelter.model.User;
-import com.animalshelter.template.CreateUserTemplate;
+import com.animalshelter.template.UserTemplate;
 
 public class UsersService {
 
@@ -45,7 +47,7 @@ public class UsersService {
 		return users;
 	}
 
-	public User createNewUser(CreateUserTemplate createUserObject) throws UserNotCreatedException, RoleNotFoundException, UserNotFoundException, DuplicateUsernameException {
+	public User createNewUser(UserTemplate createUserObject) throws UserNotCreatedException, RoleNotFoundException, UserNotFoundException, DuplicateUsernameException {
 		System.out.println(createUserObject);
 				
 		// First get a role object based on the input.  If not admin role name will default to user.
@@ -63,5 +65,33 @@ public class UsersService {
 		
 		System.out.println(createdUserObject);
 		return createdUserObject;
+	}
+	
+	public User updateUser(UserTemplate updateUserObject, int userId) throws RoleNotFoundException, UserNotFoundException, UserNotUpdatedException {
+		
+		System.out.println(updateUserObject);
+		
+		// First get a role object based on the input.  If not admin role name will default to user.
+		
+		Role roleObject = new RolesService().findRoleByName(updateUserObject.getRoleName());
+		System.out.println(roleObject);
+		
+		// Update user based on input and roleObject returned
+		// Note: username cannot be changed
+		
+		User updatedUserObject = new DatabaseUserDAO().updateUser(userId,
+				roleObject.getRoleId(),
+				updateUserObject.getFirstName(),
+				updateUserObject.getLastName(),
+				updateUserObject.getPassword());
+		
+		System.out.println(updatedUserObject);
+		return updatedUserObject;
+		
+	}
+	
+	public void deleteUser() throws UserNotDeletedException {
+		new DatabaseUserDAO().deleteUser(Integer.parseInt(this.requestValue));
+		
 	}
 }

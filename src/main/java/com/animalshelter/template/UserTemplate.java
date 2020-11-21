@@ -1,14 +1,14 @@
 package com.animalshelter.template;
 
-public class CreateUserTemplate {
+public class UserTemplate {
 
 	private String firstName, lastName, username, password, roleName;
 
-	public CreateUserTemplate() {
+	public UserTemplate() {
 		super();
 	}
 
-	public CreateUserTemplate(String firstName, String lastName, String username, String password, String roleName) {
+	public UserTemplate(String firstName, String lastName, String username, String password, String roleName) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
