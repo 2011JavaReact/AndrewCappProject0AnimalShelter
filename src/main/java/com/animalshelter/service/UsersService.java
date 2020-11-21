@@ -1,9 +1,11 @@
 package com.animalshelter.service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.animalshelter.dao.DatabaseUserDAO;
+import com.animalshelter.exception.DuplicateUsernameException;
 import com.animalshelter.exception.RoleNotFoundException;
 import com.animalshelter.exception.UserNotCreatedException;
 import com.animalshelter.exception.UserNotFoundException;
@@ -43,9 +45,9 @@ public class UsersService {
 		return users;
 	}
 
-	public User createNewUser(CreateUserTemplate createUserObject) throws UserNotCreatedException, RoleNotFoundException {
+	public User createNewUser(CreateUserTemplate createUserObject) throws UserNotCreatedException, RoleNotFoundException, UserNotFoundException, DuplicateUsernameException {
 		System.out.println(createUserObject);
-		
+				
 		// First get a role object based on the input.  If not admin role name will default to user.
 		
 		Role roleObject = new RolesService().findRoleByName(createUserObject.getRoleName());
@@ -60,6 +62,6 @@ public class UsersService {
 				createUserObject.getPassword());
 		
 		System.out.println(createdUserObject);
-		return null;
+		return createdUserObject;
 	}
 }

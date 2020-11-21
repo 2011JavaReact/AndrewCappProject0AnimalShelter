@@ -8,8 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
+import org.postgresql.util.PSQLException;
 
 import com.animalshelter.StartAnimalShelter;
+import com.animalshelter.exception.DuplicateUsernameException;
 import com.animalshelter.exception.UserNotCreatedException;
 import com.animalshelter.exception.UserNotFoundException;
 import com.animalshelter.model.Role;
@@ -111,13 +113,15 @@ public class DatabaseUserDAO {
 	}
 
 	public User createUser(int roleId, String firstName, String lastName, String username, String password)
-			throws UserNotFoundException, UserNotCreatedException {
-		String sqlQuery = "INSERT INTO users (role_id, first_name, last_name, username, password) "
+			throws UserNotFoundException, UserNotCreatedException, DuplicateUsernameException {
+		String sqlQuery = "INSERT INTO users (role_id, first_name, last_name, username, password_hash) "
 				+ "VALUES (?, ?, ?, ?, ?)";
 
 		try (Connection connection = JDBCUtility.getConnection()) {
 
 			connection.setAutoCommit(false);
+			
+			int result;
 
 			PreparedStatement pstmt = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setInt(1, roleId);
@@ -128,7 +132,10 @@ public class DatabaseUserDAO {
 
 			System.out.println(pstmt);
 
-			if (pstmt.executeUpdate() != 1) {
+			try {
+				result = pstmt.executeUpdate();
+
+			if (result != 1) {
 				throw new UserNotCreatedException("Insert user failed - no rows were affected");
 			}
 
@@ -144,11 +151,14 @@ public class DatabaseUserDAO {
 			connection.commit();
 
 			return findUserById("user_id", userId);
-
+			} catch (PSQLException e) {
+				// System.out.println("PSQLException code: " + e.getMessage().split(":")[1]);
+				throw new DuplicateUsernameException(e.getMessage());
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		throw new UserNotCreatedException();
 	}
 

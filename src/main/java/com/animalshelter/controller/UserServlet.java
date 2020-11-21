@@ -2,6 +2,7 @@ package com.animalshelter.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,7 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.postgresql.util.PSQLException;
 
+import com.animalshelter.exception.DuplicateUsernameException;
 import com.animalshelter.exception.RoleNotFoundException;
 import com.animalshelter.exception.UserNotCreatedException;
 import com.animalshelter.exception.UserNotFoundException;
@@ -39,26 +42,23 @@ public class UserServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		User returnedUser;
 
 		if (request.getPathInfo().length() > 1) {
-
 			try {
-				User user = new UsersService("userid", request.getPathInfo().split("/")[1]).findUser();
-				response.getWriter().append(objectMapper.writeValueAsString(user));
+				returnedUser = getUserById(request, response);
+				response.getWriter().append(objectMapper.writeValueAsString(returnedUser));
 				response.setContentType("application/json");
-				response.setStatus(201);
+				response.setStatus(200);
+
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-//				e.printStackTrace();
 				response.setStatus(400);
 
 				Logger logger = Logger.getLogger(UserServlet.class);
 				logger.debug(e.toString() + " QueryString: " + request.getPathInfo());
 
 			} catch (UserNotFoundException e) {
-				// TODO Auto-generated catch block
 				response.setStatus(404);
-
 				Logger logger = Logger.getLogger(UserServlet.class);
 				logger.info(e.toString() + " URI: " + request.getPathInfo());
 			}
@@ -95,6 +95,10 @@ public class UserServlet extends HttpServlet {
 
 		try {
 			User insertedUser = new UsersService().createNewUser(createUserObject);
+			response.getWriter().append(objectMapper.writeValueAsString(insertedUser));
+			response.setContentType("application/json");
+			response.setStatus(201);
+
 		} catch (UserNotCreatedException e) {
 			Logger logger = Logger.getLogger(UserServlet.class);
 			logger.debug("Error creating user - need to complete message");
@@ -104,8 +108,27 @@ public class UserServlet extends HttpServlet {
 			Logger logger = Logger.getLogger(UserServlet.class);
 			logger.debug("Error creating role - need to complete message");
 			response.setStatus(400);
-			
+
+		} catch (UserNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DuplicateUsernameException e) {
+			Logger logger = Logger.getLogger(UserServlet.class);
+			logger.debug(e.getMessage());
+			response.setStatus(400);
 		}
 	}
 
+	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+	}
+
+	public User getUserById(HttpServletRequest request, HttpServletResponse response) throws IOException, UserNotFoundException {
+
+		return new UsersService("userid", request.getPathInfo().split("/")[1]).findUser();
+
+			
+
+	}
 }
