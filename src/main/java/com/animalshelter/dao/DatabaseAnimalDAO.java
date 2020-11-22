@@ -105,12 +105,60 @@ public class DatabaseAnimalDAO {
 		}
 
 		throw new AnimalException("Unable to retreive animals from database.");
+	}
 
+	public Animal createAnimal(Animal animalToInsert) throws AnimalException {
+		
+		String sqlQuery = "INSERT INTO animals (animal_name, species, breed, sex, color, animal_age, weight, temperament) VALUES (?,?,?,?,?,?,?,?)";
+		
+		try (Connection connection = JDBCUtility.getConnection()) {
+
+			connection.setAutoCommit(false);
+
+			int result;
+
+			PreparedStatement pstmt = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+			pstmt.setString(1, animalToInsert.getAnimalName());
+			pstmt.setString(2, animalToInsert.getSpecies());
+			pstmt.setString(3, animalToInsert.getBreed());
+			pstmt.setString(4, animalToInsert.getSex());
+			pstmt.setString(5, animalToInsert.getColor());
+			pstmt.setInt(6, animalToInsert.getAnimalAge());
+			pstmt.setInt(7, animalToInsert.getWeight());
+			pstmt.setString(8, animalToInsert.getTemperament());
+			
+			System.out.println(pstmt);
+
+				result = pstmt.executeUpdate();
+
+				if (result != 1) {
+					throw new AnimalException("Insert animal failed - no rows were affected.");
+				}
+
+				int animalId = 0;
+
+				ResultSet generatedKeys = pstmt.getGeneratedKeys();
+				if (generatedKeys.next()) {
+					animalId = generatedKeys.getInt(1);
+				} else {
+					throw new AnimalException("Insert animal failed - no ID was generated.");
+				}
+
+				connection.commit();
+
+				return getAnimalById(animalId);
+			
+		} catch (SQLException e) {
+			Logger logger = Logger.getLogger(DatabaseAnimalDAO.class);
+			logger.debug(e.getMessage());
+		}
+
+		throw new AnimalException("Error inserting animal.");
 		
 	}
-	
+
 	// Utility method to create ArrayList of Animal objects from the result set
-	
+
 	public ArrayList<Animal> createAnimalArrayList(ResultSet rs) throws SQLException {
 		ArrayList<Animal> animals = new ArrayList<Animal>();
 
@@ -133,116 +181,9 @@ public class DatabaseAnimalDAO {
 	}
 }
 
-//	
-//	public User findUserById(String resultKey, int resultValue) throws UserNotFoundException {
-//
-//		String sqlQuery = "SELECT * FROM users u INNER JOIN roles r ON u.role_id = r.role_id WHERE " + resultKey
-//				+ " = ? LIMIT 1";
-//
-//		try (Connection connection = JDBCUtility.getConnection()) {
-//
-//			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-//			pstmt.setInt(1, resultValue);
-//			System.out.println(pstmt);
-//
-//			return createUserFromResultSet(pstmt.executeQuery());
-//
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//		throw new UserNotFoundException("User id not found.");
-//	}
-//
-//	public User findUserByUsername(String resultKey, String resultValue) throws UserNotFoundException {
-//
-//		String sqlQuery = "SELECT * FROM users u INNER JOIN roles r ON u.role_id = r.role_id WHERE " + resultKey
-//				+ " = ? LIMIT 1";
-//
-//		try (Connection connection = JDBCUtility.getConnection()) {
-//
-//			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-//			pstmt.setString(1, resultValue);
-//			System.out.println(pstmt);
-//
-//			return createUserFromResultSet(pstmt.executeQuery());
-//
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//		throw new UserNotFoundException("Username not found.");
-//	}
-//
-//	public User findUserByLastName(String resultKey, String resultValue) throws UserNotFoundException {
-//
-//		String sqlQuery = "SELECT * FROM users u INNER JOIN roles r ON u.role_id = r.role_id WHERE " + resultKey
-//				+ " = ? LIMIT 1";
-//
-//		try (Connection connection = JDBCUtility.getConnection()) {
-//
-//			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-//			pstmt.setString(1, resultValue);
-//			System.out.println(pstmt);
-//
-//			return createUserFromResultSet(pstmt.executeQuery());
-//
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//		throw new UserNotFoundException("Last name not found.");
-//
-//	}
-//
 //	public User createUser(int roleId, String firstName, String lastName, String username, String password)
 //			throws UserNotFoundException, UserNotCreatedException, DuplicateUsernameException {
-//		String sqlQuery = "INSERT INTO users (role_id, first_name, last_name, username, password_hash) "
-//				+ "VALUES (?, ?, ?, ?, ?)";
-//
-//		try (Connection connection = JDBCUtility.getConnection()) {
-//
-//			connection.setAutoCommit(false);
-//
-//			int result;
-//
-//			PreparedStatement pstmt = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
-//			pstmt.setInt(1, roleId);
-//			pstmt.setString(2, firstName);
-//			pstmt.setString(3, lastName);
-//			pstmt.setString(4, username);
-//			pstmt.setString(5, password);
-//
-//			System.out.println(pstmt);
-//
-//			try {
-//				result = pstmt.executeUpdate();
-//
-//				if (result != 1) {
-//					throw new UserNotCreatedException("Insert user failed - no rows were affected");
-//				}
-//
-//				int userId = 0;
-//
-//				ResultSet generatedKeys = pstmt.getGeneratedKeys();
-//				if (generatedKeys.next()) {
-//					userId = generatedKeys.getInt(1);
-//				} else {
-//					throw new UserNotCreatedException("Insert user failed - no ID was generated");
-//				}
-//
-//				connection.commit();
-//
-//				return findUserById("user_id", userId);
-//			} catch (PSQLException e) {
-//				// System.out.println("PSQLException code: " + e.getMessage().split(":")[1]);
-//				throw new DuplicateUsernameException(e.getMessage());
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//		throw new UserNotCreatedException();
+//		
 //	}
 //
 //	public User updateUser(int userId, int roleId, String firstName, String lastName, String password)
