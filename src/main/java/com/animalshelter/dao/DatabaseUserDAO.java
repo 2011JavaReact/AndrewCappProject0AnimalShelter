@@ -225,7 +225,34 @@ public class DatabaseUserDAO {
 			e.printStackTrace();
 		}
 
+	}
+
+	public Boolean validUsername(String username, String password) {
+		String sqlQuery = "SELECT * FROM users WHERE username = ? and password_hash = ? LIMIT 1";
+
+		try (Connection connection = JDBCUtility.getConnection()) {
+			int result;
+			
+			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
+			pstmt.setString(1, username);
+			pstmt.setString(2, password);
+			
+			System.out.println(pstmt);
+			
+			result = pstmt.executeUpdate();
+			
+			if (result != 1) { return false; }
+			
+			return true;
+			
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
+		return true;
+
 	}
 
 	User createUserFromResultSet(ResultSet rs) throws SQLException, UserNotFoundException {
