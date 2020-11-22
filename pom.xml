@@ -50,6 +50,6 @@
 
 	</dependencies>
 	<build>
-		<finalName>AnimalShelter</finalName>
+		<finalName>animalshelter</finalName>
 	</build>
 </project>
