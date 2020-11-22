@@ -39,8 +39,18 @@ public class AnimalsService {
 	public Animal createNewAnimal(Animal animalToInsert) throws AnimalException {
 		
 		return new DatabaseAnimalDAO().createAnimal(animalToInsert);
-	
 	}
+	
+	public Animal updateAnimal(Animal animalToUpdate, int animalId) throws AnimalException {
+		
+		return new DatabaseAnimalDAO().updateAnimal(animalToUpdate, animalId);
+	}
+	
+	public void deleteAnimal(int animalId) throws AnimalException {
+		
+		new DatabaseAnimalDAO().deleteAnimal(animalId);
+	}
+	
 	public String getRequestKey() {
 		return requestKey;
 	}

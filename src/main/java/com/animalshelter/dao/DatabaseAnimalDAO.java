@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
-import org.postgresql.util.PSQLException;
 import com.animalshelter.exception.AnimalException;
 import com.animalshelter.model.Animal;
 import com.animalshelter.util.JDBCUtility;
@@ -108,9 +107,9 @@ public class DatabaseAnimalDAO {
 	}
 
 	public Animal createAnimal(Animal animalToInsert) throws AnimalException {
-		
+
 		String sqlQuery = "INSERT INTO animals (animal_name, species, breed, sex, color, animal_age, weight, temperament) VALUES (?,?,?,?,?,?,?,?)";
-		
+
 		try (Connection connection = JDBCUtility.getConnection()) {
 
 			connection.setAutoCommit(false);
@@ -126,35 +125,108 @@ public class DatabaseAnimalDAO {
 			pstmt.setInt(6, animalToInsert.getAnimalAge());
 			pstmt.setInt(7, animalToInsert.getWeight());
 			pstmt.setString(8, animalToInsert.getTemperament());
-			
+
 			System.out.println(pstmt);
 
-				result = pstmt.executeUpdate();
+			result = pstmt.executeUpdate();
 
-				if (result != 1) {
-					throw new AnimalException("Insert animal failed - no rows were affected.");
-				}
+			if (result != 1) {
+				throw new AnimalException("Insert animal failed - no rows were affected.");
+			}
 
-				int animalId = 0;
+			int animalId = 0;
 
-				ResultSet generatedKeys = pstmt.getGeneratedKeys();
-				if (generatedKeys.next()) {
-					animalId = generatedKeys.getInt(1);
-				} else {
-					throw new AnimalException("Insert animal failed - no ID was generated.");
-				}
+			ResultSet generatedKeys = pstmt.getGeneratedKeys();
+			if (generatedKeys.next()) {
+				animalId = generatedKeys.getInt(1);
+			} else {
+				throw new AnimalException("Insert animal failed - no ID was generated.");
+			}
 
-				connection.commit();
+			connection.commit();
 
-				return getAnimalById(animalId);
-			
+			return getAnimalById(animalId);
+
 		} catch (SQLException e) {
 			Logger logger = Logger.getLogger(DatabaseAnimalDAO.class);
 			logger.debug(e.getMessage());
 		}
 
 		throw new AnimalException("Error inserting animal.");
-		
+
+	}
+
+	public Animal updateAnimal(Animal animalToUpdate, int animalId) throws AnimalException {
+
+		String sqlQuery = "UPDATE animals SET animal_name = ?, species = ?, breed = ?, sex = ?, color = ?, animal_age = ?, weight = ?, temperament = ? WHERE animal_id = ?";
+
+		try (Connection connection = JDBCUtility.getConnection()) {
+
+			connection.setAutoCommit(false);
+
+			int result;
+
+			PreparedStatement pstmt = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+			pstmt.setString(1, animalToUpdate.getAnimalName());
+			pstmt.setString(2, animalToUpdate.getSpecies());
+			pstmt.setString(3, animalToUpdate.getBreed());
+			pstmt.setString(4, animalToUpdate.getSex());
+			pstmt.setString(5, animalToUpdate.getColor());
+			pstmt.setInt(6, animalToUpdate.getAnimalAge());
+			pstmt.setInt(7, animalToUpdate.getWeight());
+			pstmt.setString(8, animalToUpdate.getTemperament());
+			pstmt.setInt(9, animalId);
+
+			System.out.println(pstmt);
+
+			result = pstmt.executeUpdate();
+
+			if (result != 1) {
+				throw new AnimalException("Update animal failed - no rows were affected.");
+			}
+
+			connection.commit();
+
+			return getAnimalById(animalId);
+
+		} catch (SQLException e) {
+			Logger logger = Logger.getLogger(DatabaseAnimalDAO.class);
+			logger.debug(e.getMessage());
+		}
+
+		throw new AnimalException("Error updating animal.");
+
+	}
+
+	// Delete animal based on animal_id
+
+	public void deleteAnimal(int animalId) throws AnimalException {
+
+		String sqlQuery = "DELETE FROM animals WHERE animal_id = ?";
+
+		try (Connection connection = JDBCUtility.getConnection()) {
+
+			connection.setAutoCommit(false);
+
+			int result;
+
+			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
+
+			pstmt.setInt(1, animalId);
+
+			System.out.println(pstmt);
+
+			result = pstmt.executeUpdate();
+
+			if (result != 1) {
+				throw new AnimalException("Delete animal failed - animal ID not found.");
+			}
+			connection.commit();
+
+		} catch (SQLException e) {
+			Logger logger = Logger.getLogger(DatabaseAnimalDAO.class);
+			logger.debug(e.getMessage());
+		}
 	}
 
 	// Utility method to create ArrayList of Animal objects from the result set
@@ -180,120 +252,3 @@ public class DatabaseAnimalDAO {
 		return animals;
 	}
 }
-
-//	public User createUser(int roleId, String firstName, String lastName, String username, String password)
-//			throws UserNotFoundException, UserNotCreatedException, DuplicateUsernameException {
-//		
-//	}
-//
-//	public User updateUser(int userId, int roleId, String firstName, String lastName, String password)
-//			throws UserNotFoundException, UserNotUpdatedException {
-//		String sqlQuery = "UPDATE users SET role_id = ?, first_name = ?, last_name = ?, password_hash = ? WHERE user_id = ?";
-//
-//		try (Connection connection = JDBCUtility.getConnection()) {
-//
-//			connection.setAutoCommit(false);
-//
-//			int result;
-//
-//			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-//			pstmt.setInt(1, roleId);
-//			pstmt.setString(2, firstName);
-//			pstmt.setString(3, lastName);
-//			pstmt.setString(4, password);
-//			pstmt.setInt(5, userId);
-//
-//			System.out.println(pstmt);
-//
-//			result = pstmt.executeUpdate();
-//
-//			if (result != 1) {
-//				throw new UserNotUpdatedException("Update user failed - no rows were affected");
-//			}
-//			connection.commit();
-//
-//			return findUserById("user_id", userId);
-//
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//		throw new UserNotUpdatedException();
-//	}
-//
-//	public void deleteUser(int userId) throws UserNotDeletedException {
-//		String sqlQuery = "DELETE FROM users WHERE user_id = ?";
-//
-//		try (Connection connection = JDBCUtility.getConnection()) {
-//
-//			connection.setAutoCommit(false);
-//
-//			int result;
-//
-//			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-//
-//			pstmt.setInt(1, userId);
-//
-//			System.out.println(pstmt);
-//
-//			result = pstmt.executeUpdate();
-//
-//			if (result != 1) {
-//				throw new UserNotDeletedException("Delete user failed - no rows were affected");
-//			}
-//			connection.commit();
-//
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//	}
-//
-//	public Boolean validUsername(String username, String password) {
-//		String sqlQuery = "SELECT * FROM users WHERE username = ? and password_hash = ? LIMIT 1";
-//
-//		try (Connection connection = JDBCUtility.getConnection()) {
-//
-//			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-//			pstmt.setString(1, username);
-//			pstmt.setString(2, password);
-//
-//			System.out.println(pstmt);
-//
-//			ResultSet resultSet = pstmt.executeQuery();
-//
-//			if (resultSet.next()) {
-//				return true;
-//			} else {
-//				return false;
-//			}
-//
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//		// need to fix this line
-//
-//		System.out.println("validUsername why is it hitting this line?");
-//		return false;
-//
-//	}
-//
-//	User createUserFromResultSet(ResultSet rs) throws SQLException, UserNotFoundException {
-//
-//		if (rs.next()) {
-//			System.out.println("rs getString result: " + rs.getString(3));
-//
-//			int userId = rs.getInt(1);
-//			int roleId = rs.getInt(2);
-//			String firstName = rs.getString(3);
-//			String lastName = rs.getString(4);
-//			String username = rs.getString(5);
-//			String roleName = rs.getString(8);
-//
-//			return new User(userId, firstName, lastName, username, new Role(roleId, roleName));
-//		} else {
-//			throw new UserNotFoundException("User not found.");
-//		}
-//	}
-//}

@@ -102,97 +102,73 @@ public class AnimalServlet extends HttpServlet {
 			Logger logger = Logger.getLogger(AnimalServlet.class);
 			logger.debug("Error creating animal. " + e.getMessage());
 			response.setStatus(400);
-		} 
+		}
 	}
-//
-//	// Update User - does not allow changing username
-//	
-//	protected void doPut(HttpServletRequest request, HttpServletResponse response)
-//			throws ServletException, IOException {
-//
-//		User returnedUser;
-//
-//		if (request.getPathInfo().length() > 1) {
-//			try {
-//				returnedUser = getUserById(request, response);
-//				
-//				BufferedReader requestBody = request.getReader();
-//
-//				StringBuilder requestBodyString = new StringBuilder();
-//				String requestBodyLine;
-//				String jsonRequestBody;
-//
-//				while ((requestBodyLine = requestBody.readLine()) != null) {
-//					requestBodyString.append(requestBodyLine);
-//				}
-//
-//				jsonRequestBody = requestBodyString.toString();
-//				System.out.println(jsonRequestBody);
-//
-//				UserTemplate updateUserObject = objectMapper.readValue(jsonRequestBody, UserTemplate.class);
-//				
-//
-//				try {
-//					User updatedUser = new UsersService().updateUser(updateUserObject, returnedUser.getUserId());
-//					response.getWriter().append(objectMapper.writeValueAsString(updatedUser));
-//					response.setContentType("application/json");
-//					response.setStatus(201);
-//
-//				} catch (RoleNotFoundException e) {
-//					Logger logger = Logger.getLogger(UserServlet.class);
-//					logger.debug("Error creating role - need to complete message");
-//					response.setStatus(400);
-//
-//				} catch (UserNotFoundException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (UserNotUpdatedException e) {
-//					Logger logger = Logger.getLogger(UserServlet.class);
-//					logger.debug(e.getMessage());
-//					response.setStatus(400);
-//				}
-//			} catch (IOException e) {
-//				response.setStatus(400);
-//				Logger logger = Logger.getLogger(UserServlet.class);
-//				logger.debug(e.toString() + " QueryString: " + request.getPathInfo());
-//
-//			} catch (UserNotFoundException e) {
-//				response.setStatus(404);
-//				Logger logger = Logger.getLogger(UserServlet.class);
-//				logger.info(e.toString() + " URI: " + request.getPathInfo());
-//			}
-//
-//			
-//		} else {
-//			Logger logger = Logger.getLogger(UserServlet.class);
-//			logger.debug("Path info is missing user ID: " + request.getPathInfo());
-//			response.setStatus(400);
-//		}
-//	}
-//
-//	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-//			throws ServletException, IOException {
-//		
-//		if (request.getPathInfo().length() > 1) {
-//			try {
-//				new UsersService("userid", request.getPathInfo().split("/")[1]).deleteUser();
-//				
-//				response.setStatus(200);
-//
-//			} catch (UserNotDeletedException e) {
-//				response.setStatus(404);
-//				Logger logger = Logger.getLogger(UserServlet.class);
-//				logger.info(e.toString() + " URI: " + request.getPathInfo());
-//			}
-//
-//		} else {
-//			Logger logger = Logger.getLogger(UserServlet.class);
-//			logger.debug("Path info is missing user ID: " + request.getPathInfo());
-//			response.setStatus(400);
-//		}
-//
-//	}
-//	
-//	
+	// Update Animal in database based on animalId
 
+	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		if (request.getPathInfo().length() > 1) {
+
+			int animalId = Integer.parseInt(request.getPathInfo().split("/")[1]);
+
+			BufferedReader requestBody = request.getReader();
+
+			StringBuilder requestBodyString = new StringBuilder();
+			String requestBodyLine;
+			String jsonRequestBody;
+
+			while ((requestBodyLine = requestBody.readLine()) != null) {
+				requestBodyString.append(requestBodyLine);
+			}
+
+			jsonRequestBody = requestBodyString.toString();
+
+			Animal animalToUpdate = objectMapper.readValue(jsonRequestBody, Animal.class);
+
+			try {
+				Animal updatedAnimal = new AnimalsService().updateAnimal(animalToUpdate, animalId);
+				response.getWriter().append(objectMapper.writeValueAsString(updatedAnimal));
+				response.setContentType("application/json");
+				response.setStatus(200);
+
+			} catch (AnimalException e) {
+				Logger logger = Logger.getLogger(AnimalServlet.class);
+				logger.debug("Error updating animal. " + e.getMessage());
+				response.setStatus(400);
+			}
+
+		} else {
+			Logger logger = Logger.getLogger(AnimalServlet.class);
+			logger.debug("Path info is missing animal ID: " + request.getPathInfo());
+			response.setStatus(400);
+		}
+
+	}
+
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		if (request.getPathInfo().length() > 1) {
+			try {
+				int animalId = Integer.parseInt(request.getPathInfo().split("/")[1]);
+
+				new AnimalsService().deleteAnimal(animalId);
+
+				response.setStatus(200);
+
+			} catch (AnimalException e) {
+				response.setStatus(404);
+				Logger logger = Logger.getLogger(AnimalServlet.class);
+				logger.info(e.toString() + " URI: " + request.getPathInfo());
+			}
+
+		} else {
+			Logger logger = Logger.getLogger(AnimalServlet.class);
+			logger.debug("Path info is missing animal ID: " + request.getPathInfo());
+			response.setStatus(400);
+		}
+
+	}
 }
