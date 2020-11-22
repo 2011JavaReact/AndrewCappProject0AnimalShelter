@@ -34,7 +34,7 @@ public class DatabaseAnimalDAO {
 	}
 
 	public ArrayList<Animal> getAnimalsByRequestKey(String requestKey, String requestValue) throws AnimalException {
-		
+
 		String sanitizedRequestKey;
 
 		switch (requestKey) {
@@ -52,20 +52,20 @@ public class DatabaseAnimalDAO {
 		}
 
 		String sqlQuery = "SELECT * FROM animals WHERE LOWER(" + sanitizedRequestKey + ") = ?";
-		
+
 		System.out.println(sqlQuery);
-		
+
 		try (Connection connection = JDBCUtility.getConnection()) {
 			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-			
+
 			pstmt.setString(1, requestValue.toLowerCase());
-			
+
 			System.out.println(pstmt);
-			
+
 			ResultSet rs = pstmt.executeQuery();
 
 			ArrayList<Animal> animalsArrayList = createAnimalArrayList(rs);
-			
+
 			if (animalsArrayList.size() > 0) {
 				return animalsArrayList;
 			} else {
@@ -81,6 +81,36 @@ public class DatabaseAnimalDAO {
 
 	}
 
+	public Animal getAnimalById(int animalId) throws AnimalException {
+		String sqlQuery = "SELECT * FROM animals WHERE animal_id = ? LIMIT 1";
+
+		try (Connection connection = JDBCUtility.getConnection()) {
+			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
+
+			pstmt.setInt(1, animalId);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			ArrayList<Animal> animalsArrayList = createAnimalArrayList(rs);
+
+			if (animalsArrayList.size() == 1) {
+				return animalsArrayList.get(0);
+			} else {
+				throw new AnimalException("Query did not return any animals.");
+			}
+
+		} catch (SQLException e) {
+			Logger logger = Logger.getLogger(DatabaseAnimalDAO.class);
+			logger.debug(e.getMessage());
+		}
+
+		throw new AnimalException("Unable to retreive animals from database.");
+
+		
+	}
+	
+	// Utility method to create ArrayList of Animal objects from the result set
+	
 	public ArrayList<Animal> createAnimalArrayList(ResultSet rs) throws SQLException {
 		ArrayList<Animal> animals = new ArrayList<Animal>();
 

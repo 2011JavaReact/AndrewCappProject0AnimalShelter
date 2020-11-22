@@ -31,6 +31,11 @@ public class AnimalsService {
 			
 	}
 
+	public Animal getAnimalById(int animalId) throws AnimalException {
+		
+		return new DatabaseAnimalDAO().getAnimalById(animalId);
+	}
+	
 	public String getRequestKey() {
 		return requestKey;
 	}

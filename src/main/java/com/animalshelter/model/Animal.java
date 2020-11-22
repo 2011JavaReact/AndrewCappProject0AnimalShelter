@@ -1,16 +1,16 @@
 package com.animalshelter.model;
 
-
 public class Animal {
 
 	private String animalName, species, breed, sex, color, temperament;
 	private int animalId, animalAge, weight;
-	
+
 	public Animal() {
 		super();
 	}
-	
-	public Animal(int animalId, String animalName, String species, String breed, String sex, String color, int animalAge, int weight, String temperament) {
+
+	public Animal(int animalId, String animalName, String species, String breed, String sex, String color,
+			int animalAge, int weight, String temperament) {
 		this.animalId = animalId;
 		this.animalName = animalName;
 		this.species = species;
@@ -20,7 +20,19 @@ public class Animal {
 		this.animalAge = animalAge;
 		this.weight = weight;
 		this.temperament = temperament;
-	
+
+	}
+
+	public Animal(String animalName, String species, String breed, String sex, String color, int animalAge, int weight,
+			String temperament) {
+		this.animalName = animalName;
+		this.species = species;
+		this.breed = breed;
+		this.sex = sex;
+		this.color = color;
+		this.animalAge = animalAge;
+		this.weight = weight;
+		this.temperament = temperament;
 	}
 
 	public String getAnimalName() {
@@ -101,8 +113,5 @@ public class Animal {
 				+ ", color=" + color + ", temperament=" + temperament + ", animalId=" + animalId + ", animalAge="
 				+ animalAge + ", weight=" + weight + "]";
 	}
-	
-	
-	
-	
+
 }

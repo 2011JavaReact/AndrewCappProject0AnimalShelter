@@ -47,25 +47,25 @@ public class AnimalsServlet extends HttpServlet {
 
 			String requestKey = request.getQueryString().split("=")[0];
 			String requestValue;
-			
+
 			// Allows for up to two words in query string joined by &
-			
+
 			if (request.getQueryString().split("=")[1].split("&").length > 1) {
-				requestValue = request.getQueryString().split("=")[1].split("&")[0] + " " + request.getQueryString().split("=")[1].split("&")[1];
-			} else { 
+				requestValue = request.getQueryString().split("=")[1].split("&")[0] + " "
+						+ request.getQueryString().split("=")[1].split("&")[1];
+			} else {
 				requestValue = request.getQueryString().split("=")[1];
-				
 			}
-			
+
 			System.out.println(requestValue.toString());
 
 			try {
 				ArrayList<Animal> animals = new AnimalsService(requestKey, requestValue).getAnimalsByRequestKey();
-				
+
 				response.getWriter().append(objectMapper.writeValueAsString(animals));
 				response.setContentType("application/json");
 				response.setStatus(200);
-				
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 //					e.printStackTrace();
@@ -75,7 +75,7 @@ public class AnimalsServlet extends HttpServlet {
 				logger.debug(e.toString() + " QueryString: " + request.getQueryString());
 
 			} catch (AnimalException e) {
-				
+
 				response.setStatus(404);
 
 				Logger logger = Logger.getLogger(AnimalsServlet.class);
@@ -97,12 +97,10 @@ public class AnimalsServlet extends HttpServlet {
 				response.setStatus(200);
 			} catch (AnimalException e) {
 				response.setStatus(400);
-				
+
 				Logger logger = Logger.getLogger(AnimalsServlet.class);
 				logger.info(e.getMessage());
 			}
 		}
-
 	}
-
 }
