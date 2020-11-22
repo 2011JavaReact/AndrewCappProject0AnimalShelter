@@ -231,27 +231,29 @@ public class DatabaseUserDAO {
 		String sqlQuery = "SELECT * FROM users WHERE username = ? and password_hash = ? LIMIT 1";
 
 		try (Connection connection = JDBCUtility.getConnection()) {
-			int result;
-			
+
 			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
 			pstmt.setString(1, username);
 			pstmt.setString(2, password);
-			
+
 			System.out.println(pstmt);
-			
-			result = pstmt.executeUpdate();
-			
-			if (result != 1) { return false; }
-			
-			return true;
-			
-			
-			
+
+			ResultSet resultSet = pstmt.executeQuery();
+
+			if (resultSet.next()) {
+				return true;
+			} else {
+				return false;
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		return true;
+
+		// need to fix this line
+
+		System.out.println("validUsername why is it hitting this line?");
+		return false;
 
 	}
 

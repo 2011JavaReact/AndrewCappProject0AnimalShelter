@@ -1,4 +1,4 @@
-package com.AnimalShelter;
+package com.animalshelter;
 
 import org.junit.Assert.*;
 

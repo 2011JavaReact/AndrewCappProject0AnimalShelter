@@ -20,32 +20,36 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Servlet implementation class UserSessionServlet
  */
-@WebServlet(urlPatterns = { "/login", "/logout" })
-public class UserSessionServlet extends HttpServlet {
+@WebServlet("/login")
+public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public UserSessionServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public LoginServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	ObjectMapper objectMapper = new ObjectMapper();
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		BufferedReader requestBody = request.getReader();
 
@@ -59,24 +63,24 @@ public class UserSessionServlet extends HttpServlet {
 		}
 
 		jsonRequestBody = requestBodyString.toString();
-		
+
 		SessionsService userSession = objectMapper.readValue(jsonRequestBody, SessionsService.class);
-		
+
 		System.out.println(userSession);
-		
+
 		if (userSession.validateUser()) {
-		HttpSession session = request.getSession();
-		session.setAttribute("username", userSession.getUsername());
-		response.setContentType("text/html");
-		PrintWriter pwriter = response.getWriter();
-		pwriter.print("<h2>Welcome " + userSession.getUsername() + "!</h2>");
-		pwriter.close();
-		
+			HttpSession session = request.getSession();
+			session.setAttribute("username", userSession.getUsername());
+			response.setContentType("text/html");
+			PrintWriter pwriter = response.getWriter();
+			pwriter.print("<h2>Welcome " + userSession.getUsername() + "!</h2>");
+			pwriter.close();
+
 		} else {
-		
-		Logger logger = Logger.getLogger(UserSessionServlet.class);
-		logger.debug("Bad username or password: " + userSession.getUsername());
-		response.setStatus(401);
+
+			Logger logger = Logger.getLogger(LoginServlet.class);
+			logger.debug("Bad username or password: " + userSession.getUsername());
+			response.setStatus(401);
 		}
 
 	}
