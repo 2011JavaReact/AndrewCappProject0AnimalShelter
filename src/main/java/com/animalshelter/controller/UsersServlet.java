@@ -81,7 +81,7 @@ public class UsersServlet extends HttpServlet {
 				ArrayList<User> users = new UsersService().getAllUsers();
 				response.getWriter().append(objectMapper.writeValueAsString(users));
 				response.setContentType("application/json");
-				response.setStatus(201);
+				response.setStatus(200);
 			} catch (UserNotFoundException e) {
 				// TODO Auto-generated catch block
 				response.setStatus(400);
