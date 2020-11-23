@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.animalshelter.dao.DatabaseRoleDAO;
 import com.animalshelter.dao.DatabaseUserDAO;
 import com.animalshelter.exception.DuplicateUsernameException;
 import com.animalshelter.exception.RoleNotFoundException;
@@ -18,12 +19,22 @@ import com.animalshelter.template.UserTemplate;
 public class UsersService {
 
 	private String requestKey, requestValue;
-
+	private DatabaseUserDAO userDAO;
+	private DatabaseRoleDAO roleDAO;
+	
 	public UsersService() {
-
+		this.userDAO = new DatabaseUserDAO();
+		this.roleDAO = new DatabaseRoleDAO();
+	}
+	
+	public UsersService(DatabaseUserDAO userDAO, DatabaseRoleDAO roleDAO) {
+		this.userDAO = new DatabaseUserDAO();
+		this.roleDAO = new DatabaseRoleDAO();
 	}
 
 	public UsersService(String requestKey, String requestValue) {
+		this.userDAO = new DatabaseUserDAO();
+		this.roleDAO = new DatabaseRoleDAO();
 		this.requestKey = requestKey;
 		this.requestValue = requestValue;
 	}
@@ -32,18 +43,18 @@ public class UsersService {
 
 		switch (this.requestKey) {
 		case "userid":
-			return new DatabaseUserDAO().findUserById("user_id", Integer.parseInt(requestValue));
+			return userDAO.findUserById("user_id", Integer.parseInt(requestValue));
 		case "username":
-			return new DatabaseUserDAO().findUserByUsername("username", requestValue);
+			return userDAO.findUserByUsername("username", requestValue);
 		case "lastname":
-			return new DatabaseUserDAO().findUserByLastName("last_name", requestValue);
+			return userDAO.findUserByLastName("last_name", requestValue);
 		default:
 			throw new IOException("Invalid Search Option");
 		}
 	}
 
 	public ArrayList<User> getAllUsers() throws UserNotFoundException {
-		ArrayList<User> users = new DatabaseUserDAO().getAllUsers();
+		ArrayList<User> users = userDAO.getAllUsers();
 		return users;
 	}
 
@@ -57,7 +68,7 @@ public class UsersService {
 		
 		// Create user based on input and roleObject returned
 		
-		User createdUserObject = new DatabaseUserDAO().createUser(roleObject.getRoleId(),
+		User createdUserObject = userDAO.createUser(roleObject.getRoleId(),
 				createUserObject.getFirstName(),
 				createUserObject.getLastName(),
 				createUserObject.getUsername(),
@@ -79,7 +90,7 @@ public class UsersService {
 		// Update user based on input and roleObject returned
 		// Note: username cannot be changed
 		
-		User updatedUserObject = new DatabaseUserDAO().updateUser(userId,
+		User updatedUserObject = userDAO.updateUser(userId,
 				roleObject.getRoleId(),
 				updateUserObject.getFirstName(),
 				updateUserObject.getLastName(),
@@ -91,7 +102,7 @@ public class UsersService {
 	}
 	
 	public void deleteUser() throws UserNotDeletedException {
-		new DatabaseUserDAO().deleteUser(Integer.parseInt(this.requestValue));
+		userDAO.deleteUser(Integer.parseInt(this.requestValue));
 		
 	}
 }
