@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.Assert;
 
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -77,28 +78,16 @@ public class TestAnimal {
 	@Test
 	public void testCreateAnimal() throws AnimalException {
 		
+		when(animalDAOMock.createAnimal(Matchers.any(Animal.class))).thenReturn(testAnimal2);
+		
+		Assert.assertEquals(animalsService.createNewAnimal(testAnimal2), testAnimal2);
 	}
 	
 	@Test
 	public void testUpdateAnimal() throws AnimalException {
 		
-	}
-	
-	@Test
-	public void testDeleteAnimal() throws AnimalException {
+		when(animalDAOMock.updateAnimal(Matchers.any(Animal.class), anyInt())).thenReturn(testAnimal2);
 		
+		Assert.assertEquals(animalsService.updateAnimal(testAnimal2, 1), testAnimal2);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

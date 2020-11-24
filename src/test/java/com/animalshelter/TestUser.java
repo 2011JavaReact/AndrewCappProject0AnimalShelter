@@ -1,14 +1,15 @@
 package com.animalshelter;
 
-import com.animalshelter.dao.DatabaseAnimalDAO;
 import com.animalshelter.dao.DatabaseUserDAO;
-import com.animalshelter.exception.AnimalException;
+import com.animalshelter.exception.DuplicateUsernameException;
+import com.animalshelter.exception.RoleNotFoundException;
+import com.animalshelter.exception.UserNotCreatedException;
 import com.animalshelter.exception.UserNotFoundException;
-import com.animalshelter.model.Animal;
+import com.animalshelter.exception.UserNotUpdatedException;
 import com.animalshelter.model.Role;
 import com.animalshelter.model.User;
-import com.animalshelter.service.AnimalsService;
 import com.animalshelter.service.UsersService;
+import com.animalshelter.template.UserTemplate;
 
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -21,9 +22,11 @@ import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 
 public class TestUser {
 	private User testUser1, testUser2, testUser3;
+	private UserTemplate userTemplate1;
 
 	private DatabaseUserDAO userDAOMock;
 	private ArrayList<User> testUsers = new ArrayList<User>();
@@ -43,6 +46,8 @@ public class TestUser {
 		testUser1 = new User(1, "Amber", "Burns", "amber1", role1);
 		testUser2 = new User(2, "Andrew", "Capp", "andrew", role2);
 		testUser3 = new User(3, "Jessica", "Z", "jessica", role1);
+		userTemplate1 = new UserTemplate(testUser3.getFirstName(), testUser3.getLastName(), testUser3.getUsername(), "1111", testUser3.getRole().getRoleName());
+		
 
 		testUsers.add(testUser1);
 		testUsers.add(testUser2);
@@ -59,7 +64,7 @@ public class TestUser {
 	}
 
 	@Test
-	public void testGetUserById() throws AnimalException, IOException, UserNotFoundException {
+	public void testGetUserById() throws IOException, UserNotFoundException {
 
 		usersService.setRequestKey("userid");
 		usersService.setRequestValue("1");
@@ -71,42 +76,46 @@ public class TestUser {
 	}
 
 	@Test
-	public void testGetUserByIdResultKeyException() throws AnimalException, IOException, UserNotFoundException {
+	public void testGetUserByIdResultKeyException() throws IOException, UserNotFoundException {
 		usersService.setRequestKey("user_id");
 		usersService.setRequestValue("1");
 		Assert.assertThrows(IOException.class, () -> {
 			usersService.findUser();
 		});
 	}
+
 	@Test
-	public void testGetAllUsers() throws AnimalException, UserNotFoundException {
+	public void testGetUserByUsername() throws IOException, UserNotFoundException {
+
+		usersService.setRequestKey("username");
+		usersService.setRequestValue("andrew");
+
+		when(userDAOMock.findUserByUsername(anyString(), anyString())).thenReturn(testUser2);
+
+		Assert.assertEquals(usersService.findUser().getUsername(), testUser2.getUsername());
+	}
+
+	@Test
+	public void testGetAllUsers() throws UserNotFoundException {
 
 		when(userDAOMock.getAllUsers()).thenReturn(testUsers);
-		
-		Assert.assertEquals(usersService.getAllUsers().size(), testUsers.size());
 
+		Assert.assertEquals(usersService.getAllUsers().size(), testUsers.size());
 	}
-//
-//	@Test
-//	public void findUserByRequestKey() throws AnimalException {
-//
-//		when(animalDAOMock.getAnimalsByRequestKey(anyString(), anyString())).thenReturn(testAnimals);
-//
-//		Assert.assertEquals(animalsService.getAnimalsByRequestKey().size(), testAnimals.size());
-//	}
-//
-//	@Test
-//	public void testCreateNewUser() throws AnimalException {
-//
-//	}
-//
-//	@Test
-//	public void testUpdateUser() throws AnimalException {
-//
-//	}
-//
-//	@Test
-//	public void testDeleteUser() throws AnimalException {
-//		
-//	}
+
+	@Test
+	public void testCreateNewUser() throws UserNotCreatedException, RoleNotFoundException, UserNotFoundException, DuplicateUsernameException {
+		
+		when(userDAOMock.createUser(anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(testUser3);
+		
+		Assert.assertEquals(usersService.createNewUser(userTemplate1), testUser3);
+		
+	}
+
+	@Test
+	public void testUpdateUser() throws UserNotFoundException, UserNotUpdatedException, RoleNotFoundException {
+		when(userDAOMock.updateUser(anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(testUser3);
+		
+		Assert.assertEquals(usersService.updateUser(userTemplate1, 1), testUser3);
+	}
 }

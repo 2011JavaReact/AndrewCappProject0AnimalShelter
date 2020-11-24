@@ -24,6 +24,7 @@ Web Service / API to keep track of animals available for adoption in a (NO KILL!
 <li>Mockito (Testing)</li>
 <li>Log4j Version 1.2 (Logging)</li>
 <li>Jackson Databind Version 2.11 (JSON read / write)</li>
+<li>Postman (User Interface / Testing)</li>
 </ul>
 
 ## API Resources / URI's
@@ -193,6 +194,7 @@ Response: Returns http status code `200 OK` if successful.
 <li>Download PostgreSQL database at: https://www.postgresql.org/download/</li>
 <li>Download Apache Tomcat version 9 at: https://tomcat.apache.org/download-90.cgi</li>
 <li>Download animalshelter.war file from GitHub at: https://github.com/2011JavaReact/AndrewCappProject0AnimalShelter</li>
+<li>Download Postman at: https://www.postman.com/downloads/</li>
 <li>Start database session and create tables using scripts from GitHub:
 <ul>
 <li>Animal_Shelter_Scripts.sql</li>
@@ -213,12 +215,12 @@ Response: Returns http status code `200 OK` if successful.
 <li>Mac / Linux: bin/startup.sh</li>
 </ul>
 </li>
-<li>Navigate to http://localhost:8080/animalshelter to begin using API.</li>
+<li>Navigate to http://localhost:8080/animalshelter using Postman to begin using API.</li>
 </ol>
 
 ### Developer
 <ol>
-<li>Download and install Java JDK, IDE, and Maven if needed.</li>
+<li>Download and install Java JDK, IDE, Postman, and Maven if needed.</li>
 <li>Install PostreSQL and Tomcat as instructed above for users.</li>
 <li>Update environment variables as instructed above for users plus:
 <ul>

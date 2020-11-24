@@ -58,12 +58,10 @@ public class UsersService {
 	}
 
 	public User createNewUser(UserTemplate createUserObject) throws UserNotCreatedException, RoleNotFoundException, UserNotFoundException, DuplicateUsernameException {
-		System.out.println(createUserObject);
 				
 		// First get a role object based on the input.  If not admin role name will default to user.
 		
 		Role roleObject = new RolesService().findRoleByName(createUserObject.getRoleName());
-		System.out.println(roleObject);
 		
 		// Create user based on input and roleObject returned
 		
@@ -73,18 +71,14 @@ public class UsersService {
 				createUserObject.getUsername(),
 				createUserObject.getPassword());
 		
-		System.out.println(createdUserObject);
 		return createdUserObject;
 	}
 	
 	public User updateUser(UserTemplate updateUserObject, int userId) throws RoleNotFoundException, UserNotFoundException, UserNotUpdatedException {
 		
-		System.out.println(updateUserObject);
-		
 		// First get a role object based on the input.  If not admin role name will default to user.
 		
 		Role roleObject = new RolesService().findRoleByName(updateUserObject.getRoleName());
-		System.out.println(roleObject);
 		
 		// Update user based on input and roleObject returned
 		// Note: username cannot be changed
@@ -95,7 +89,6 @@ public class UsersService {
 				updateUserObject.getLastName(),
 				updateUserObject.getPassword());
 		
-		System.out.println(updatedUserObject);
 		return updatedUserObject;
 		
 	}

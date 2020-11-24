@@ -62,7 +62,6 @@ public class DatabaseUserDAO {
 
 			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
 			pstmt.setInt(1, resultValue);
-			System.out.println(pstmt);
 
 			return createUserFromResultSet(pstmt.executeQuery());
 
@@ -82,7 +81,6 @@ public class DatabaseUserDAO {
 
 			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
 			pstmt.setString(1, resultValue);
-			System.out.println(pstmt);
 
 			return createUserFromResultSet(pstmt.executeQuery());
 
@@ -102,7 +100,6 @@ public class DatabaseUserDAO {
 
 			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
 			pstmt.setString(1, resultValue);
-			System.out.println(pstmt);
 
 			return createUserFromResultSet(pstmt.executeQuery());
 
@@ -131,8 +128,6 @@ public class DatabaseUserDAO {
 			pstmt.setString(3, lastName);
 			pstmt.setString(4, username);
 			pstmt.setString(5, password);
-
-			System.out.println(pstmt);
 
 			try {
 				result = pstmt.executeUpdate();
@@ -181,8 +176,6 @@ public class DatabaseUserDAO {
 			pstmt.setString(4, password);
 			pstmt.setInt(5, userId);
 
-			System.out.println(pstmt);
-
 			result = pstmt.executeUpdate();
 
 			if (result != 1) {
@@ -212,8 +205,6 @@ public class DatabaseUserDAO {
 
 			pstmt.setInt(1, userId);
 
-			System.out.println(pstmt);
-
 			result = pstmt.executeUpdate();
 
 			if (result != 1) {
@@ -235,8 +226,6 @@ public class DatabaseUserDAO {
 			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
 			pstmt.setString(1, username);
 			pstmt.setString(2, password);
-
-			System.out.println(pstmt);
 
 			ResultSet resultSet = pstmt.executeQuery();
 
@@ -260,8 +249,6 @@ public class DatabaseUserDAO {
 	User createUserFromResultSet(ResultSet rs) throws SQLException, UserNotFoundException {
 
 		if (rs.next()) {
-			System.out.println("rs getString result: " + rs.getString(3));
-
 			int userId = rs.getInt(1);
 			int roleId = rs.getInt(2);
 			String firstName = rs.getString(3);

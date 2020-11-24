@@ -51,8 +51,6 @@ public class DatabaseRoleDAO {
 	Role createRoleFromResultSet(ResultSet rs) throws SQLException, RoleNotFoundException {
 
 		if (rs.next()) {
-			System.out.println("rs getString result: " + rs.getString(2));
-
 			int roleId = rs.getInt(1);
 			String roleName = rs.getString(2);
 
