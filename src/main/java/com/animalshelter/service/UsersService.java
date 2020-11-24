@@ -27,9 +27,8 @@ public class UsersService {
 		this.roleDAO = new DatabaseRoleDAO();
 	}
 	
-	public UsersService(DatabaseUserDAO userDAO, DatabaseRoleDAO roleDAO) {
+	public UsersService(DatabaseUserDAO userDAO) {
 		this.userDAO = new DatabaseUserDAO();
-		this.roleDAO = new DatabaseRoleDAO();
 	}
 
 	public UsersService(String requestKey, String requestValue) {
@@ -105,4 +104,30 @@ public class UsersService {
 		userDAO.deleteUser(Integer.parseInt(this.requestValue));
 		
 	}
+
+	public DatabaseUserDAO getUserDAO() {
+		return userDAO;
+	}
+
+	public void setUserDAO(DatabaseUserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
+
+	public String getRequestKey() {
+		return requestKey;
+	}
+
+	public void setRequestKey(String requestKey) {
+		this.requestKey = requestKey;
+	}
+
+	public String getRequestValue() {
+		return requestValue;
+	}
+
+	public void setRequestValue(String requestValue) {
+		this.requestValue = requestValue;
+	}
+	
+	
 }
