@@ -1,60 +1,173 @@
 # Fur Haven Animal Shelter
 
-Web Service / API to keep track of animals in a (NO KILL!!) shelter.
+Web Service / API to keep track of animals available for adoption in a (NO KILL!!) shelter.
 
 ## Features
 
 <ul>
+    <li>View animals (all, by ID, by species, by breed, by male/female)</li>
+    <li>Manage animals (create, update, delete)</li>
+    <li>View users (all, by ID, by username, by last name)</li>
     <li>Manage users (create, update, delete)</li>
     <li>Set roles for users (user, admin)</li>
-    <li>View users (all, by ID, by username, by last name)</li>
-    <li>Login / Logout</li>
-    <li>Manage animals (create, update, delete)</li>
-    <li>View animals (all, by ID, by species, by breed, by male/female)</li>
+    <li>User Login / Logout</li>
+</ul>
+
+## Technologies Utilized
+<ul>
+<li>Java Version 1.8</li>
+<li>PostgreSQL Database 13</li>
+<li>Apache Tomcat Server Version 9</li>
+<li>Java Enterprise Javax Servlet API Version 3.1</li>
+<li>Maven</li>
+<li>JUnit4 (Testing)</li>
+<li>Mockito (Testing)</li>
+<li>Log4j Version 1.2 (Logging)</li>
+<li>Jackson Databind Version 2.11 (JSON read / write)</li>
 </ul>
 
 ## API Resources / URI's
 
-All results are returned in JSON format.
+Note: All results are returned in JSON format.
+### Animals Domain
 
+### `GET` http://animalshelter/animals/
+Response: Returns all animals available for adoption.
 
+### `GET` http://animalshelter/animals?{species, breed, sex}={search value}/
 
-### Users
-### `<GET>` /animalshelter/users/
+Example: http://animalshelter/animals?species=cat/
 
+Response: Returns all animals that match {search value}.
+
+### `GET` http://animalshelter/animal/{id}/
+
+Example: http://animalshelter/animal/1/
+
+Response: Returns the animal matching the animal id {id}.
+
+### `POST` http://animalshelter/animal/
+
+Action: Inserts new animal in database. Available for adoption!
+
+Example of data needed in body of request:
+```
+    {
+        "animalName": "Jacob3",
+        "species": "dog",
+        "breed": "Papillon",
+        "sex": "male",
+        "color": "white and brown",
+        "animalAge": "2",
+        "weight": "10",
+        "temperament": "feisty"
+    }
+```
+<ul>Constraints:
+<li>Body of request must contain valid JSON.</li>
+<li>All fields must be present in request.</li>
+</ul>
+Response: Returns the created animal if request was successful.
+
+### `PUT` http://animalshelter/animal/{id}/
+
+Action: Update animal based on {id} and data in body of request.
+
+Example of data needed in body of request:
+```
+    {
+        "animalName": "Jacob6666",
+        "species": "dog",
+        "breed": "Papillon",
+        "sex": "male",
+        "color": "white and brown",
+        "animalAge": "2",
+        "weight": "10",
+        "temperament": "feisty"
+    }
+```
+<ul>Constraints:
+<li>Body of request must contain valid JSON.</li>
+<li>All fields must be present in request.</li>
+</ul>
+Response: Returns the revised animal if request was successful.
+
+### `DELETE` http://animalshelter/animal/{id}/
+
+Action: Deletes animal based on {id}.  Use when animal is adopted!!
+
+Example: http://animalshelter/animal/1/
+
+Response: Returns http status code `200 OK` if successful.
+
+### Users Domain
+
+### `GET` http://animalshelter/users/
 Response: Returns all users.
 
-### `<GET>` /animalshelter/users?{userid, username, or lastname}={search value}
+### `GET` http://animalshelter/users?{userid, username, or lastname}={search value}/
 
-Example: /animalshelter/users?username=acapp
+Example: http://animalshelter/users?username=acapp/
 
 Response: Returns first user that matches {search value}.
 
-### `<GET>` /animalshelter/user/{id}/
+### `GET` http://animalshelter/user/{id}/
+
+Example: http://animalshelter/user/1/
 
 Response: Returns the user matching the user id {id}.
 
-### `<POST>` /animalshelter/user/
+### `POST` http://animalshelter/user/
 
 Action: Inserts new user in database.
 
+Example of data needed in body of request:
+```
+    {
+        "firstName": "Amber",
+        "lastName": "Burns",
+        "username": "amber3",
+        "password": "1111",
+        "role": "user"
+    }
+```
 <ul>Constraints:
-<li>Body of request must contain valid JSON</li>
+<li>Body of request must contain valid JSON.</li>
+<li>All fields must be present.</li>
 <li>Body must contain a unique username (no duplicate usernames allowed).</li>
-<li>Body must contain a role. If not 'admin' (any case) then will be assigned 'user'</li> 
+<li>Body must contain a role. If not 'admin' (case insensitive) then will be assigned 'user' by default.</li> 
 </ul>
 Response: Returns the created user if request was successful.
 
-### `<PUT>` /animalshelter/user/{id}/
+### `PUT` http://animalshelter/user/{id}/
 
-Need to complete
+Action: Update user based on {id} and data in body of request.
 
-### `<DELETE>` /animalshelter/user/{id}/
+Example of data needed in body of request:
+```
+    {
+        "firstName": "Amber2",
+        "lastName": "Burns",
+        "username": "amber3333",
+        "password": "1111",
+        "role": "Admin"
+    }
+```
+<ul>Constraints:
+<li>Body of request must contain valid JSON.</li>
+<li>All fields except username must be present.</li>
+<li>Username cannot be changed. This field will be ignored and can be omitted.</li>
+<li>Body must contain a role. If not 'admin' (case insensitive) then will be assigned 'user' by default.</li> 
+</ul>
+Response: Returns the revised user if request was successful.
 
-Need to complete
+### `DELETE` http://animalshelter/user/{id}/
 
-Add routes for animals...
+Action: Deletes user based on {id}.
 
+Example: http://animalshelter/user/1/
+
+Response: Returns http status code `200 OK` if successful.
 
 ## Database Schema
 
@@ -62,52 +175,60 @@ Add routes for animals...
 
 ## Installation
 
-Written with Ruby version 2.6.3p62 using Ruby on Rails Framework.
+### User
+<ol>
+<li>Download Java Runtime Environment at: https://www.oracle.com/java/technologies/javase-jre8-downloads.html</li>
+<li>Download PostgreSQL database at: https://www.postgresql.org/download/</li>
+<li>Download Apache Tomcat version 9 at: https://tomcat.apache.org/download-90.cgi</li>
+<li>Download animalshelter.war file from GitHub at: https://github.com/2011JavaReact/AndrewCappProject0AnimalShelter</li>
+<li>Start database session and create tables using scripts from GitHub:
+<ul>
+<li>Animal_Shelter_Scripts.sql</li>
+<li>animals table.sql</li>
+</ul>
+</li>
+<li>Update database url, username, and password environment variables
+<ul>
+<li>DB_URL</li>
+<li>DB_USERNAME</li>
+<li>DB_PASSWORD</li>
+</ul>
+</li>
+<li>Copy animalshelter.war file to Tomcat /webapps folder</li>
+<li>Start Tomcat server
+<ul>
+<li>Windows: bin/startup.bat</li>
+<li>Mac / Linux: bin/startup.sh</li>
+</ul>
+</li>
+<li>Navigate to http://localhost:8080/animalshelter to begin using API</li>
+</ol>
 
-Uses a Sqlite3 database.  To refresh or set up the database, use the following steps:
-
-    $ rails db:drop
-
-    $ rails db:migrate
-
-    $ rails db:seed
-
-
-Download the code for this webapp using:
-
-    $ git clone https://github.com/ACAPP-dev/auto-dealer.git
-
-Update Gem files using command:
-
-    $ bundle install 
-    
-    or
-    
-    $ bundle update
-
-## Development
-
-    You can use:
-    
-    $ rails s
-            
-    to start webserver.
-    
-    Use:
-
-    $ rails c
-
-    to enter a console session for debugging and/or exploring.
+### Developer
+<ol>
+<li>Download and install IDE and Maven if needed</li>
+<li>Install PostreSQL and Tomcat as instructed above for users</li>
+<li>Update environment variables as instructed above for users plus
+<ul>
+<li>JAVA_HOME - Jave source code location</li>
+<li>CATALINA_HOME - Tomcat application location</li>
+<li>MAVEN_HOME - Maven application location</li>
+<li>M2_HOME - Maven application location (if needed)</li>
+</ul>
+</li>
+<li>Connecto to database and create tables as instructed above for users</li>
+<li>Download source code from GitHub at: https://github.com/2011JavaReact/AndrewCappProject0AnimalShelter</li>
+<li>Be sure to load dependencies from pom.xml file in project directory</li>
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ACAPP-dev/auto-dealer. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/2011JavaReact/AndrewCappProject0AnimalShelter. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
-Written by **Andrew Capp** in conjunction with _Flatiron Academy_ - April 2020
+Written by **Andrew Capp** in conjunction with _Revature_ - November 2020
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+This API is available as open source under the terms of the [Apache License 2.0](https://github.com/2011JavaReact/AndrewCappProject0AnimalShelter/blob/main/LICENSE).
 
 ## Code of Conduct
 
