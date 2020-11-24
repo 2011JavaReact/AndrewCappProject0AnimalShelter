@@ -30,22 +30,26 @@ Web Service / API to keep track of animals available for adoption in a (NO KILL!
 
 Note: All results are returned in JSON format.
 ### Animals Domain
-
+---
+## View All Animals:
 ### `GET` http://animalshelter/animals/
 Response: Returns all animals available for adoption.
 
+## View Animals by Species, Breed, or Male/Female:
 ### `GET` http://animalshelter/animals?{species, breed, sex}={search value}/
 
 Example: http://animalshelter/animals?species=cat/
 
 Response: Returns all animals that match {search value}.
 
+## View Animal by Id:
 ### `GET` http://animalshelter/animal/{id}/
 
 Example: http://animalshelter/animal/1/
 
 Response: Returns the animal matching the animal id {id}.
 
+## Create New Animal:
 ### `POST` http://animalshelter/animal/
 
 Action: Inserts new animal in database. Available for adoption!
@@ -69,6 +73,7 @@ Example of data needed in body of request:
 </ul>
 Response: Returns the created animal if request was successful.
 
+## Update Animal Based on Id:
 ### `PUT` http://animalshelter/animal/{id}/
 
 Action: Update animal based on {id} and data in body of request.
@@ -92,6 +97,7 @@ Example of data needed in body of request:
 </ul>
 Response: Returns the revised animal if request was successful.
 
+## Delete Animal Based on Id:
 ### `DELETE` http://animalshelter/animal/{id}/
 
 Action: Deletes animal based on {id}.  Use when animal is adopted!!
@@ -101,22 +107,26 @@ Example: http://animalshelter/animal/1/
 Response: Returns http status code `200 OK` if successful.
 
 ### Users Domain
-
+---
+## View All Users:
 ### `GET` http://animalshelter/users/
 Response: Returns all users.
 
+## Search For User by Userid, Username, or Lastname:
 ### `GET` http://animalshelter/users?{userid, username, or lastname}={search value}/
 
 Example: http://animalshelter/users?username=acapp/
 
 Response: Returns first user that matches {search value}.
 
+## View User Based on Id:
 ### `GET` http://animalshelter/user/{id}/
 
 Example: http://animalshelter/user/1/
 
 Response: Returns the user matching the user id {id}.
 
+## Create New User:
 ### `POST` http://animalshelter/user/
 
 Action: Inserts new user in database.
@@ -139,6 +149,7 @@ Example of data needed in body of request:
 </ul>
 Response: Returns the created user if request was successful.
 
+## Update User Based on Id:
 ### `PUT` http://animalshelter/user/{id}/
 
 Action: Update user based on {id} and data in body of request.
@@ -161,6 +172,7 @@ Example of data needed in body of request:
 </ul>
 Response: Returns the revised user if request was successful.
 
+## Delete User Based on Id:
 ### `DELETE` http://animalshelter/user/{id}/
 
 Action: Deletes user based on {id}.
@@ -187,28 +199,28 @@ Response: Returns http status code `200 OK` if successful.
 <li>animals table.sql</li>
 </ul>
 </li>
-<li>Update database url, username, and password environment variables
+<li>Update database url, username, and password environment variables with your database specific setup:
 <ul>
 <li>DB_URL</li>
 <li>DB_USERNAME</li>
 <li>DB_PASSWORD</li>
 </ul>
 </li>
-<li>Copy animalshelter.war file to Tomcat /webapps folder</li>
-<li>Start Tomcat server
+<li>Copy animalshelter.war file to Tomcat application /webapps folder.</li>
+<li>Start Tomcat server:
 <ul>
 <li>Windows: bin/startup.bat</li>
 <li>Mac / Linux: bin/startup.sh</li>
 </ul>
 </li>
-<li>Navigate to http://localhost:8080/animalshelter to begin using API</li>
+<li>Navigate to http://localhost:8080/animalshelter to begin using API.</li>
 </ol>
 
 ### Developer
 <ol>
-<li>Download and install IDE and Maven if needed</li>
-<li>Install PostreSQL and Tomcat as instructed above for users</li>
-<li>Update environment variables as instructed above for users plus
+<li>Download and install Java JDK, IDE, and Maven if needed.</li>
+<li>Install PostreSQL and Tomcat as instructed above for users.</li>
+<li>Update environment variables as instructed above for users plus:
 <ul>
 <li>JAVA_HOME - Jave source code location</li>
 <li>CATALINA_HOME - Tomcat application location</li>
@@ -216,15 +228,15 @@ Response: Returns http status code `200 OK` if successful.
 <li>M2_HOME - Maven application location (if needed)</li>
 </ul>
 </li>
-<li>Connecto to database and create tables as instructed above for users</li>
-<li>Download source code from GitHub at: https://github.com/2011JavaReact/AndrewCappProject0AnimalShelter</li>
-<li>Be sure to load dependencies from pom.xml file in project directory</li>
+<li>Connect to database and create tables as instructed above for users.</li>
+<li>Download source code from GitHub at: https://github.com/2011JavaReact/AndrewCappProject0AnimalShelter.</li>
+<li>Be sure to load dependencies from pom.xml file in project directory (Maven will install these automatically).</li>
 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/2011JavaReact/AndrewCappProject0AnimalShelter. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
-Written by **Andrew Capp** in conjunction with _Revature_ - November 2020
+Written by **Andrew Capp** in conjunction with _Revature_ - November 2020.
 
 ## License
 
@@ -232,4 +244,4 @@ This API is available as open source under the terms of the [Apache License 2.0]
 
 ## Code of Conduct
 
-Everyone interacting in the project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/ACAPP-dev/auto-dealer/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/2011JavaReact/AndrewCappProject0AnimalShelter/blob/main/CODE_OF_CONDUCT.md).
