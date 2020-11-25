@@ -7,34 +7,39 @@ import com.animalshelter.model.Role;
 public class RolesService {
 	private int roleId;
 	private String roleName;
-	
+
 	public RolesService() {
-		// TODO Auto-generated constructor stub
 	}
-	
+
 	public RolesService(int roleId) {
 		this.roleId = roleId;
 	}
-	
+
 	public RolesService(String roleName) {
 		this.roleName = roleName;
 	}
 
 	// findRoleById not currently implemented
-	
+
 	public Role findRoleById(int roleId) {
 		return null;
 	}
-	
+
+	// If role does not equal case insensitive 'admin' then it will default to
+	// 'user'
+
 	public Role findRoleByName(String roleName) throws RoleNotFoundException {
 		String sanitizedRoleName;
-		
-		if (roleName.toLowerCase().equals("admin")) { sanitizedRoleName = "Admin"; }
-		else { sanitizedRoleName = "User"; }
-		
+
+		if (roleName.toLowerCase().equals("admin")) {
+			sanitizedRoleName = "Admin";
+		} else {
+			sanitizedRoleName = "User";
+		}
+
 		return new DatabaseRoleDAO().findRoleByName(sanitizedRoleName);
 	}
-	
+
 	public int getRoleId() {
 		return roleId;
 	}

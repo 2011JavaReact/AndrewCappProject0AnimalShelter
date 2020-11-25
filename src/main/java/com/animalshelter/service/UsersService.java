@@ -21,12 +21,12 @@ public class UsersService {
 	private String requestKey, requestValue;
 	private DatabaseUserDAO userDAO;
 	private DatabaseRoleDAO roleDAO;
-	
+
 	public UsersService() {
 		this.userDAO = new DatabaseUserDAO();
 		this.roleDAO = new DatabaseRoleDAO();
 	}
-	
+
 	public UsersService(DatabaseUserDAO userDAO) {
 		this.userDAO = new DatabaseUserDAO();
 	}
@@ -37,6 +37,10 @@ public class UsersService {
 		this.requestKey = requestKey;
 		this.requestValue = requestValue;
 	}
+
+	// Combined find user by userid, username, and lastname into one method below.
+	// Note that 'search by argument' is hard coded due to a different format needed
+	// for the database
 
 	public User findUser() throws IOException, UserNotFoundException {
 
@@ -57,45 +61,43 @@ public class UsersService {
 		return users;
 	}
 
-	public User createNewUser(UserTemplate createUserObject) throws UserNotCreatedException, RoleNotFoundException, UserNotFoundException, DuplicateUsernameException {
-				
-		// First get a role object based on the input.  If not admin role name will default to user.
-		
+	public User createNewUser(UserTemplate createUserObject)
+			throws UserNotCreatedException, RoleNotFoundException, UserNotFoundException, DuplicateUsernameException {
+
+		// First get a role object based on the input. If not admin role name will
+		// default to user.
+
 		Role roleObject = new RolesService().findRoleByName(createUserObject.getRoleName());
-		
+
 		// Create user based on input and roleObject returned
-		
-		User createdUserObject = userDAO.createUser(roleObject.getRoleId(),
-				createUserObject.getFirstName(),
-				createUserObject.getLastName(),
-				createUserObject.getUsername(),
-				createUserObject.getPassword());
-		
+
+		User createdUserObject = userDAO.createUser(roleObject.getRoleId(), createUserObject.getFirstName(),
+				createUserObject.getLastName(), createUserObject.getUsername(), createUserObject.getPassword());
+
 		return createdUserObject;
 	}
-	
-	public User updateUser(UserTemplate updateUserObject, int userId) throws RoleNotFoundException, UserNotFoundException, UserNotUpdatedException {
-		
-		// First get a role object based on the input.  If not admin role name will default to user.
-		
+
+	public User updateUser(UserTemplate updateUserObject, int userId)
+			throws RoleNotFoundException, UserNotFoundException, UserNotUpdatedException {
+
+		// First get a role object based on the input. If not admin role name will
+		// default to user.
+
 		Role roleObject = new RolesService().findRoleByName(updateUserObject.getRoleName());
-		
+
 		// Update user based on input and roleObject returned
 		// Note: username cannot be changed
-		
-		User updatedUserObject = userDAO.updateUser(userId,
-				roleObject.getRoleId(),
-				updateUserObject.getFirstName(),
-				updateUserObject.getLastName(),
-				updateUserObject.getPassword());
-		
+
+		User updatedUserObject = userDAO.updateUser(userId, roleObject.getRoleId(), updateUserObject.getFirstName(),
+				updateUserObject.getLastName(), updateUserObject.getPassword());
+
 		return updatedUserObject;
-		
+
 	}
-	
+
 	public void deleteUser() throws UserNotDeletedException {
 		userDAO.deleteUser(Integer.parseInt(this.requestValue));
-		
+
 	}
 
 	public DatabaseUserDAO getUserDAO() {
@@ -121,6 +123,4 @@ public class UsersService {
 	public void setRequestValue(String requestValue) {
 		this.requestValue = requestValue;
 	}
-	
-	
 }

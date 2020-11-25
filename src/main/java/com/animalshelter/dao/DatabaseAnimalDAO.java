@@ -52,14 +52,10 @@ public class DatabaseAnimalDAO {
 
 		String sqlQuery = "SELECT * FROM animals WHERE LOWER(" + sanitizedRequestKey + ") = ?";
 
-		System.out.println(sqlQuery);
-
 		try (Connection connection = JDBCUtility.getConnection()) {
 			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
 
 			pstmt.setString(1, requestValue.toLowerCase());
-
-			System.out.println(pstmt);
 
 			ResultSet rs = pstmt.executeQuery();
 
@@ -126,8 +122,6 @@ public class DatabaseAnimalDAO {
 			pstmt.setInt(7, animalToInsert.getWeight());
 			pstmt.setString(8, animalToInsert.getTemperament());
 
-			System.out.println(pstmt);
-
 			result = pstmt.executeUpdate();
 
 			if (result != 1) {
@@ -177,8 +171,6 @@ public class DatabaseAnimalDAO {
 			pstmt.setString(8, animalToUpdate.getTemperament());
 			pstmt.setInt(9, animalId);
 
-			System.out.println(pstmt);
-
 			result = pstmt.executeUpdate();
 
 			if (result != 1) {
@@ -213,8 +205,6 @@ public class DatabaseAnimalDAO {
 			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
 
 			pstmt.setInt(1, animalId);
-
-			System.out.println(pstmt);
 
 			result = pstmt.executeUpdate();
 

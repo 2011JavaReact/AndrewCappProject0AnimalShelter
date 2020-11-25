@@ -43,7 +43,7 @@ public class UserServlet extends HttpServlet {
 	ObjectMapper objectMapper = new ObjectMapper();
 
 	// Get a User by user ID (use uri /users to search for user or return all users)
-	
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		User returnedUser;
@@ -63,13 +63,14 @@ public class UserServlet extends HttpServlet {
 
 			} catch (UserNotFoundException e) {
 				response.setStatus(404);
+
 				Logger logger = Logger.getLogger(UserServlet.class);
-				logger.info(e.toString() + " URI: " + request.getPathInfo());
+				logger.debug(e.toString() + " URI: " + request.getPathInfo());
 			}
 
 		} else {
 			Logger logger = Logger.getLogger(UserServlet.class);
-			logger.debug("Path info is missing user ID: " + request.getPathInfo());
+			logger.info("Path info is missing user ID: " + request.getPathInfo());
 			response.setStatus(400);
 		}
 
@@ -91,7 +92,6 @@ public class UserServlet extends HttpServlet {
 		}
 
 		jsonRequestBody = requestBodyString.toString();
-		System.out.println(jsonRequestBody);
 
 		UserTemplate createUserObject = objectMapper.readValue(jsonRequestBody, UserTemplate.class);
 
@@ -101,19 +101,25 @@ public class UserServlet extends HttpServlet {
 			response.setContentType("application/json");
 			response.setStatus(201);
 
+			Logger logger = Logger.getLogger(UserServlet.class);
+			logger.info("Inserted User in table users - ID: " + insertedUser.getUserId() + " Name: "
+					+ insertedUser.getFirstName() + " " + insertedUser.getLastName());
+
 		} catch (UserNotCreatedException e) {
 			Logger logger = Logger.getLogger(UserServlet.class);
-			logger.debug("Error creating user - need to complete message");
+			logger.debug("Error creating user: " + e.getMessage());
 			response.setStatus(400);
 
 		} catch (RoleNotFoundException e) {
 			Logger logger = Logger.getLogger(UserServlet.class);
-			logger.debug("Error creating role - need to complete message");
+			logger.debug("Error creating role: " + e.getMessage());
 			response.setStatus(400);
 
 		} catch (UserNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger logger = Logger.getLogger(UserServlet.class);
+			logger.debug("User Not Found: " + e.getMessage());
+			response.setStatus(400);
+
 		} catch (DuplicateUsernameException e) {
 			Logger logger = Logger.getLogger(UserServlet.class);
 			logger.debug(e.getMessage());
@@ -122,7 +128,7 @@ public class UserServlet extends HttpServlet {
 	}
 
 	// Update User - does not allow changing username
-	
+
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -131,7 +137,7 @@ public class UserServlet extends HttpServlet {
 		if (request.getPathInfo().length() > 1) {
 			try {
 				returnedUser = getUserById(request, response);
-				
+
 				BufferedReader requestBody = request.getReader();
 
 				StringBuilder requestBodyString = new StringBuilder();
@@ -143,25 +149,26 @@ public class UserServlet extends HttpServlet {
 				}
 
 				jsonRequestBody = requestBodyString.toString();
-				System.out.println(jsonRequestBody);
 
 				UserTemplate updateUserObject = objectMapper.readValue(jsonRequestBody, UserTemplate.class);
-				
 
 				try {
 					User updatedUser = new UsersService().updateUser(updateUserObject, returnedUser.getUserId());
 					response.getWriter().append(objectMapper.writeValueAsString(updatedUser));
 					response.setContentType("application/json");
 					response.setStatus(201);
+					Logger logger = Logger.getLogger(UserServlet.class);
+					logger.info("Updated User in table users - ID: " + updatedUser.getUserId() + " Name: "
+							+ updatedUser.getFirstName() + " " + updatedUser.getLastName());
 
 				} catch (RoleNotFoundException e) {
 					Logger logger = Logger.getLogger(UserServlet.class);
-					logger.debug("Error creating role - need to complete message");
+					logger.debug("Error creating role: " + e.getMessage());
 					response.setStatus(400);
 
 				} catch (UserNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Logger logger = Logger.getLogger(UserServlet.class);
+					logger.debug("User Not Found: " + e.getMessage());
 				} catch (UserNotUpdatedException e) {
 					Logger logger = Logger.getLogger(UserServlet.class);
 					logger.debug(e.getMessage());
@@ -175,44 +182,45 @@ public class UserServlet extends HttpServlet {
 			} catch (UserNotFoundException e) {
 				response.setStatus(404);
 				Logger logger = Logger.getLogger(UserServlet.class);
-				logger.info(e.toString() + " URI: " + request.getPathInfo());
+				logger.debug(e.toString() + " URI: " + request.getPathInfo());
 			}
 
-			
 		} else {
 			Logger logger = Logger.getLogger(UserServlet.class);
-			logger.debug("Path info is missing user ID: " + request.getPathInfo());
+			logger.info("Path info is missing user ID: " + request.getPathInfo());
 			response.setStatus(400);
 		}
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		if (request.getPathInfo().length() > 1) {
 			try {
 				new UsersService("userid", request.getPathInfo().split("/")[1]).deleteUser();
-				
 				response.setStatus(200);
-
+				
+				Logger logger = Logger.getLogger(UserServlet.class);
+				logger.info("Deleted User in table users - ID: " + request.getPathInfo().split("/")[1]);
+				
 			} catch (UserNotDeletedException e) {
 				response.setStatus(404);
 				Logger logger = Logger.getLogger(UserServlet.class);
-				logger.info(e.toString() + " URI: " + request.getPathInfo());
+				logger.debug(e.toString() + " URI: " + request.getPathInfo());
 			}
 
 		} else {
 			Logger logger = Logger.getLogger(UserServlet.class);
-			logger.debug("Path info is missing user ID: " + request.getPathInfo());
+			logger.info("Path info is missing user ID: " + request.getPathInfo());
 			response.setStatus(400);
 		}
 
 	}
-	
-	
+
 	// Utility method to return an instance of a User based on a user ID
-	
-	public User getUserById(HttpServletRequest request, HttpServletResponse response) throws IOException, UserNotFoundException {
+
+	public User getUserById(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, UserNotFoundException {
 
 		return new UsersService("userid", request.getPathInfo().split("/")[1]).findUser();
 	}

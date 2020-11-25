@@ -43,11 +43,9 @@ public class UsersServlet extends HttpServlet {
 
 			String requestKey = request.getQueryString().split("=")[0];
 			String requestValue = request.getQueryString().split("=")[1];
-			System.out.println(request.getQueryString().split("=")[0]);
 
 			try {
 				User user = new UsersService(requestKey, requestValue).findUser();
-				System.out.println("ObjectMapper writeValue: " + objectMapper.writeValueAsString(user).toString());
 
 				// objectMapper is using the getter methods in the User class to write JSON
 				// values...
@@ -55,24 +53,17 @@ public class UsersServlet extends HttpServlet {
 				response.setContentType("application/json");
 				response.setStatus(201);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-//				e.printStackTrace();
 				response.setStatus(400);
 
 				Logger logger = Logger.getLogger(UsersServlet.class);
 				logger.debug(e.toString() + " QueryString: " + request.getQueryString());
 
 			} catch (UserNotFoundException e) {
-				// TODO Auto-generated catch block
 				response.setStatus(404);
 
 				Logger logger = Logger.getLogger(UsersServlet.class);
 				logger.debug(e.toString() + " QueryString: " + request.getQueryString());
-				
-				// Use below items to view environment variables or current working directory for log file
-//				System.out.println(System.getenv("HOME"));
-//				System.out.println(System.getProperty("user.dir"));
-//				e.printStackTrace();
+
 			}
 
 		} else {
@@ -83,14 +74,13 @@ public class UsersServlet extends HttpServlet {
 				response.setContentType("application/json");
 				response.setStatus(200);
 			} catch (UserNotFoundException e) {
-				// TODO Auto-generated catch block
 				response.setStatus(400);
-				e.printStackTrace();
+
+				Logger logger = Logger.getLogger(UsersServlet.class);
+				logger.debug(e.toString() + " QueryString: " + request.getQueryString());
 			}
 		}
 
 	}
-	
-	
 
 }

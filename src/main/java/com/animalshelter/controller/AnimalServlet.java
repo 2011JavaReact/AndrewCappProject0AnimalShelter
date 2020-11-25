@@ -57,16 +57,15 @@ public class AnimalServlet extends HttpServlet {
 				response.getWriter().append(objectMapper.writeValueAsString(returnedAnimal));
 				response.setContentType("application/json");
 				response.setStatus(200);
-
 			} catch (AnimalException e) {
 				response.setStatus(404);
 				Logger logger = Logger.getLogger(AnimalServlet.class);
-				logger.info(e.toString() + " URI: " + request.getPathInfo());
+				logger.debug(e.toString() + " URI: " + request.getPathInfo());
 			}
 
 		} else {
 			Logger logger = Logger.getLogger(AnimalServlet.class);
-			logger.debug("Path info is missing animal ID: " + request.getPathInfo());
+			logger.info("Path info is missing animal ID: " + request.getPathInfo());
 			response.setStatus(400);
 		}
 
@@ -88,7 +87,6 @@ public class AnimalServlet extends HttpServlet {
 		}
 
 		jsonRequestBody = requestBodyString.toString();
-		System.out.println(jsonRequestBody);
 
 		Animal animalToInsert = objectMapper.readValue(jsonRequestBody, Animal.class);
 
@@ -97,6 +95,9 @@ public class AnimalServlet extends HttpServlet {
 			response.getWriter().append(objectMapper.writeValueAsString(insertedAnimal));
 			response.setContentType("application/json");
 			response.setStatus(201);
+			Logger logger = Logger.getLogger(AnimalServlet.class);
+			logger.info("Inserted Animal in table animals - ID: " + insertedAnimal.getAnimalId() + " Name: "
+					+ insertedAnimal.getAnimalName());
 
 		} catch (AnimalException e) {
 			Logger logger = Logger.getLogger(AnimalServlet.class);
@@ -132,6 +133,9 @@ public class AnimalServlet extends HttpServlet {
 				response.getWriter().append(objectMapper.writeValueAsString(updatedAnimal));
 				response.setContentType("application/json");
 				response.setStatus(200);
+				Logger logger = Logger.getLogger(AnimalServlet.class);
+				logger.info("Updated Animal in table animals - ID: " + updatedAnimal.getAnimalId() + " Name: "
+						+ updatedAnimal.getAnimalName());
 
 			} catch (AnimalException e) {
 				Logger logger = Logger.getLogger(AnimalServlet.class);
@@ -141,12 +145,14 @@ public class AnimalServlet extends HttpServlet {
 
 		} else {
 			Logger logger = Logger.getLogger(AnimalServlet.class);
-			logger.debug("Path info is missing animal ID: " + request.getPathInfo());
+			logger.info("Path info is missing animal ID: " + request.getPathInfo());
 			response.setStatus(400);
 		}
 
 	}
 
+	// Delete animal from database based on animalId
+	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -157,16 +163,18 @@ public class AnimalServlet extends HttpServlet {
 				new AnimalsService().deleteAnimal(animalId);
 
 				response.setStatus(200);
+				Logger logger = Logger.getLogger(AnimalServlet.class);
+				logger.info("Deleted Animal in table animals - ID: " + animalId);
 
 			} catch (AnimalException e) {
 				response.setStatus(404);
 				Logger logger = Logger.getLogger(AnimalServlet.class);
-				logger.info(e.toString() + " URI: " + request.getPathInfo());
+				logger.debug(e.toString() + " URI: " + request.getPathInfo());
 			}
 
 		} else {
 			Logger logger = Logger.getLogger(AnimalServlet.class);
-			logger.debug("Path info is missing animal ID: " + request.getPathInfo());
+			logger.info("Path info is missing animal ID: " + request.getPathInfo());
 			response.setStatus(400);
 		}
 

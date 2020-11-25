@@ -46,7 +46,8 @@ public class DatabaseUserDAO {
 			return users;
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger logger = Logger.getLogger(DatabaseUserDAO.class);
+			logger.debug(e.getMessage());
 		}
 
 		throw new UserNotFoundException();
@@ -66,7 +67,8 @@ public class DatabaseUserDAO {
 			return createUserFromResultSet(pstmt.executeQuery());
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger logger = Logger.getLogger(DatabaseUserDAO.class);
+			logger.debug(e.getMessage());
 		}
 
 		throw new UserNotFoundException("User id not found.");
@@ -85,7 +87,8 @@ public class DatabaseUserDAO {
 			return createUserFromResultSet(pstmt.executeQuery());
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger logger = Logger.getLogger(DatabaseUserDAO.class);
+			logger.debug(e.getMessage());
 		}
 
 		throw new UserNotFoundException("Username not found.");
@@ -104,7 +107,8 @@ public class DatabaseUserDAO {
 			return createUserFromResultSet(pstmt.executeQuery());
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger logger = Logger.getLogger(DatabaseUserDAO.class);
+			logger.debug(e.getMessage());
 		}
 
 		throw new UserNotFoundException("Last name not found.");
@@ -149,11 +153,11 @@ public class DatabaseUserDAO {
 
 				return findUserById("user_id", userId);
 			} catch (PSQLException e) {
-				// System.out.println("PSQLException code: " + e.getMessage().split(":")[1]);
 				throw new DuplicateUsernameException(e.getMessage());
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger logger = Logger.getLogger(DatabaseUserDAO.class);
+			logger.debug(e.getMessage());
 		}
 
 		throw new UserNotCreatedException();
@@ -186,7 +190,8 @@ public class DatabaseUserDAO {
 			return findUserById("user_id", userId);
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger logger = Logger.getLogger(DatabaseUserDAO.class);
+			logger.debug(e.getMessage());
 		}
 
 		throw new UserNotUpdatedException();
@@ -213,7 +218,8 @@ public class DatabaseUserDAO {
 			connection.commit();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger logger = Logger.getLogger(DatabaseUserDAO.class);
+			logger.debug(e.getMessage());
 		}
 
 	}
@@ -236,14 +242,10 @@ public class DatabaseUserDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger logger = Logger.getLogger(DatabaseUserDAO.class);
+			logger.debug(e.getMessage());
 		}
-
-		// need to fix this line
-
-		System.out.println("validUsername why is it hitting this line?");
 		return false;
-
 	}
 
 	User createUserFromResultSet(ResultSet rs) throws SQLException, UserNotFoundException {

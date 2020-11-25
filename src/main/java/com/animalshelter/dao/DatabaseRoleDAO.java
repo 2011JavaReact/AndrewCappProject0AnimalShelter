@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
 import com.animalshelter.exception.RoleNotFoundException;
 import com.animalshelter.model.Role;
 import com.animalshelter.util.JDBCUtility;
@@ -12,7 +14,6 @@ import com.animalshelter.util.JDBCUtility;
 public class DatabaseRoleDAO {
 
 	public DatabaseRoleDAO() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Role findRoleById(int roleId) throws RoleNotFoundException {
@@ -24,7 +25,8 @@ public class DatabaseRoleDAO {
 			
 			return createRoleFromResultSet(pstmt.executeQuery());
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger logger = Logger.getLogger(DatabaseRoleDAO.class);
+			logger.debug(e.getMessage());
 		}
 		
 		throw new RoleNotFoundException("Role id not found.");
@@ -40,7 +42,8 @@ public class DatabaseRoleDAO {
 			
 			return createRoleFromResultSet(pstmt.executeQuery());
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger logger = Logger.getLogger(DatabaseRoleDAO.class);
+			logger.debug(e.getMessage());
 		}
 		
 		throw new RoleNotFoundException("Role name not found.");

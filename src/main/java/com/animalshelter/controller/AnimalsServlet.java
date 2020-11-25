@@ -57,8 +57,6 @@ public class AnimalsServlet extends HttpServlet {
 				requestValue = request.getQueryString().split("=")[1];
 			}
 
-			System.out.println(requestValue.toString());
-
 			try {
 				ArrayList<Animal> animals = new AnimalsService(requestKey, requestValue).getAnimalsByRequestKey();
 
@@ -67,15 +65,12 @@ public class AnimalsServlet extends HttpServlet {
 				response.setStatus(200);
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-//					e.printStackTrace();
 				response.setStatus(400);
 
 				Logger logger = Logger.getLogger(UsersServlet.class);
 				logger.debug(e.toString() + " QueryString: " + request.getQueryString());
 
 			} catch (AnimalException e) {
-
 				response.setStatus(404);
 
 				Logger logger = Logger.getLogger(AnimalsServlet.class);
@@ -83,13 +78,11 @@ public class AnimalsServlet extends HttpServlet {
 
 				// Use below items to view environment variables or current working directory
 				// for log file
-//					System.out.println(System.getenv("HOME"));
-//					System.out.println(System.getProperty("user.dir"));
-//					e.printStackTrace();
+					// System.out.println(System.getenv("HOME"));
+					// System.out.println(System.getProperty("user.dir"));
 			}
 
 		} else {
-
 			try {
 				ArrayList<Animal> animals = new AnimalsService().getAllAnimals();
 				response.getWriter().append(objectMapper.writeValueAsString(animals));
@@ -99,7 +92,7 @@ public class AnimalsServlet extends HttpServlet {
 				response.setStatus(400);
 
 				Logger logger = Logger.getLogger(AnimalsServlet.class);
-				logger.info(e.getMessage());
+				logger.debug(e.getMessage());
 			}
 		}
 	}

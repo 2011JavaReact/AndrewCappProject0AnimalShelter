@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 /**
  * Servlet implementation class LogoutServlet
  */
@@ -28,12 +30,14 @@ public class LogoutServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println(request.getSession().getAttribute("username"));
 
 		if (request.getSession().getAttribute("username") == null) {
 			response.setStatus(400);
 			response.getWriter().print("Error - not logged in yet");
 		} else {
+			Logger logger = Logger.getLogger(LogoutServlet.class);
+			logger.info(request.getSession().getAttribute("username") + " Logged out.");
+
 			request.getSession().invalidate();
 			response.getWriter().print("Successfully Logged Out!");
 		}

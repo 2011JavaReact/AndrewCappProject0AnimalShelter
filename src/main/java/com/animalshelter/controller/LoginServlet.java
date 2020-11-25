@@ -66,8 +66,6 @@ public class LoginServlet extends HttpServlet {
 
 		SessionsService userSession = objectMapper.readValue(jsonRequestBody, SessionsService.class);
 
-		System.out.println(userSession);
-
 		if (userSession.validateUser()) {
 			HttpSession session = request.getSession();
 			session.setAttribute("username", userSession.getUsername());
@@ -75,6 +73,8 @@ public class LoginServlet extends HttpServlet {
 			PrintWriter pwriter = response.getWriter();
 			pwriter.print("<h2>Welcome " + userSession.getUsername() + "!</h2>");
 			pwriter.close();
+			Logger logger = Logger.getLogger(LoginServlet.class);
+			logger.info(userSession.getUsername() + " Logged in.");
 
 		} else {
 
