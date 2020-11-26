@@ -11,12 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.animalshelter.exception.AnimalException;
-import com.animalshelter.exception.DuplicateUsernameException;
 import com.animalshelter.exception.RoleNotFoundException;
-import com.animalshelter.exception.UserNotCreatedException;
-import com.animalshelter.exception.UserNotDeletedException;
-import com.animalshelter.exception.UserNotFoundException;
-import com.animalshelter.exception.UserNotUpdatedException;
+import com.animalshelter.exception.UserException;
 import com.animalshelter.model.Animal;
 import com.animalshelter.model.User;
 import com.animalshelter.service.AnimalsService;

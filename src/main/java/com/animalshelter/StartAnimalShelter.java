@@ -6,13 +6,13 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import com.animalshelter.dao.DatabaseUserDAO;
-import com.animalshelter.exception.UserNotFoundException;
+import com.animalshelter.exception.UserException;
 import com.animalshelter.model.User;
 import com.animalshelter.util.JDBCUtility;
 
 public class StartAnimalShelter {
 
-	public static void main(String[] args) throws UserNotFoundException {
+	public static void main(String[] args) throws UserException {
 		System.out.println("Welcome to Animal Shelter Web API");
 		
 		User user1 = new User();

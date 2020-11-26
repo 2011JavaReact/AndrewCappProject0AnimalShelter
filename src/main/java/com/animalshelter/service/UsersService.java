@@ -6,12 +6,8 @@ import java.util.ArrayList;
 
 import com.animalshelter.dao.DatabaseRoleDAO;
 import com.animalshelter.dao.DatabaseUserDAO;
-import com.animalshelter.exception.DuplicateUsernameException;
 import com.animalshelter.exception.RoleNotFoundException;
-import com.animalshelter.exception.UserNotCreatedException;
-import com.animalshelter.exception.UserNotDeletedException;
-import com.animalshelter.exception.UserNotFoundException;
-import com.animalshelter.exception.UserNotUpdatedException;
+import com.animalshelter.exception.UserException;
 import com.animalshelter.model.Role;
 import com.animalshelter.model.User;
 import com.animalshelter.template.UserTemplate;
@@ -42,7 +38,7 @@ public class UsersService {
 	// Note that 'search by argument' is hard coded due to a different format needed
 	// for the database
 
-	public User findUser() throws IOException, UserNotFoundException {
+	public User findUser() throws IOException, UserException {
 
 		switch (this.requestKey) {
 		case "userid":
@@ -56,13 +52,13 @@ public class UsersService {
 		}
 	}
 
-	public ArrayList<User> getAllUsers() throws UserNotFoundException {
+	public ArrayList<User> getAllUsers() throws UserException {
 		ArrayList<User> users = userDAO.getAllUsers();
 		return users;
 	}
 
 	public User createNewUser(UserTemplate createUserObject)
-			throws UserNotCreatedException, RoleNotFoundException, UserNotFoundException, DuplicateUsernameException {
+			throws UserException, RoleNotFoundException, UserException {
 
 		// First get a role object based on the input. If not admin role name will
 		// default to user.
@@ -78,7 +74,7 @@ public class UsersService {
 	}
 
 	public User updateUser(UserTemplate updateUserObject, int userId)
-			throws RoleNotFoundException, UserNotFoundException, UserNotUpdatedException {
+			throws RoleNotFoundException, UserException {
 
 		// First get a role object based on the input. If not admin role name will
 		// default to user.
@@ -95,7 +91,7 @@ public class UsersService {
 
 	}
 
-	public void deleteUser() throws UserNotDeletedException {
+	public void deleteUser() throws UserException {
 		userDAO.deleteUser(Integer.parseInt(this.requestValue));
 
 	}

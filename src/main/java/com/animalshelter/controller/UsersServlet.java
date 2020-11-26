@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 import com.animalshelter.StartAnimalShelter;
 import com.animalshelter.dao.DatabaseUserDAO;
-import com.animalshelter.exception.UserNotFoundException;
+import com.animalshelter.exception.UserException;
 import com.animalshelter.model.User;
 import com.animalshelter.service.UsersService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,7 +58,7 @@ public class UsersServlet extends HttpServlet {
 				Logger logger = Logger.getLogger(UsersServlet.class);
 				logger.debug(e.toString() + " QueryString: " + request.getQueryString());
 
-			} catch (UserNotFoundException e) {
+			} catch (UserException e) {
 				response.setStatus(404);
 
 				Logger logger = Logger.getLogger(UsersServlet.class);
@@ -73,7 +73,7 @@ public class UsersServlet extends HttpServlet {
 				response.getWriter().append(objectMapper.writeValueAsString(users));
 				response.setContentType("application/json");
 				response.setStatus(200);
-			} catch (UserNotFoundException e) {
+			} catch (UserException e) {
 				response.setStatus(400);
 
 				Logger logger = Logger.getLogger(UsersServlet.class);

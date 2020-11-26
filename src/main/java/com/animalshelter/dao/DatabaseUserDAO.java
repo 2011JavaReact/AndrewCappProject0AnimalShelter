@@ -11,11 +11,7 @@ import org.apache.log4j.Logger;
 import org.postgresql.util.PSQLException;
 
 import com.animalshelter.StartAnimalShelter;
-import com.animalshelter.exception.DuplicateUsernameException;
-import com.animalshelter.exception.UserNotCreatedException;
-import com.animalshelter.exception.UserNotDeletedException;
-import com.animalshelter.exception.UserNotFoundException;
-import com.animalshelter.exception.UserNotUpdatedException;
+import com.animalshelter.exception.UserException;
 import com.animalshelter.model.Role;
 import com.animalshelter.model.User;
 import com.animalshelter.template.UserTemplate;
@@ -23,7 +19,7 @@ import com.animalshelter.util.JDBCUtility;
 
 public class DatabaseUserDAO {
 
-	public ArrayList<User> getAllUsers() throws UserNotFoundException {
+	public ArrayList<User> getAllUsers() throws UserException {
 
 		ArrayList<User> users = new ArrayList();
 		String sqlQuery = "SELECT * FROM users u INNER JOIN roles r ON u.role_id = r.role_id";
@@ -50,11 +46,11 @@ public class DatabaseUserDAO {
 			logger.debug(e.getMessage());
 		}
 
-		throw new UserNotFoundException();
+		throw new UserException();
 
 	}
 
-	public User findUserById(String resultKey, int resultValue) throws UserNotFoundException {
+	public User findUserById(String resultKey, int resultValue) throws UserException {
 
 		String sqlQuery = "SELECT * FROM users u INNER JOIN roles r ON u.role_id = r.role_id WHERE " + resultKey
 				+ " = ? LIMIT 1";
@@ -71,10 +67,10 @@ public class DatabaseUserDAO {
 			logger.debug(e.getMessage());
 		}
 
-		throw new UserNotFoundException("User id not found.");
+		throw new UserException("User id not found.");
 	}
 
-	public User findUserByUsername(String resultKey, String resultValue) throws UserNotFoundException {
+	public User findUserByUsername(String resultKey, String resultValue) throws UserException {
 
 		String sqlQuery = "SELECT * FROM users u INNER JOIN roles r ON u.role_id = r.role_id WHERE " + resultKey
 				+ " = ? LIMIT 1";
@@ -91,10 +87,10 @@ public class DatabaseUserDAO {
 			logger.debug(e.getMessage());
 		}
 
-		throw new UserNotFoundException("Username not found.");
+		throw new UserException("Username not found.");
 	}
 
-	public User findUserByLastName(String resultKey, String resultValue) throws UserNotFoundException {
+	public User findUserByLastName(String resultKey, String resultValue) throws UserException {
 
 		String sqlQuery = "SELECT * FROM users u INNER JOIN roles r ON u.role_id = r.role_id WHERE " + resultKey
 				+ " = ? LIMIT 1";
@@ -111,12 +107,12 @@ public class DatabaseUserDAO {
 			logger.debug(e.getMessage());
 		}
 
-		throw new UserNotFoundException("Last name not found.");
+		throw new UserException("Last name not found.");
 
 	}
 
 	public User createUser(int roleId, String firstName, String lastName, String username, String password)
-			throws UserNotFoundException, UserNotCreatedException, DuplicateUsernameException {
+			throws UserException {
 		String sqlQuery = "INSERT INTO users (role_id, first_name, last_name, username, password_hash) "
 				+ "VALUES (?, ?, ?, ?, ?)";
 
@@ -137,7 +133,7 @@ public class DatabaseUserDAO {
 				result = pstmt.executeUpdate();
 
 				if (result != 1) {
-					throw new UserNotCreatedException("Insert user failed - no rows were affected");
+					throw new UserException("Insert user failed - no rows were affected");
 				}
 
 				int userId = 0;
@@ -146,25 +142,25 @@ public class DatabaseUserDAO {
 				if (generatedKeys.next()) {
 					userId = generatedKeys.getInt(1);
 				} else {
-					throw new UserNotCreatedException("Insert user failed - no ID was generated");
+					throw new UserException("Insert user failed - no ID was generated");
 				}
 
 				connection.commit();
 
 				return findUserById("user_id", userId);
 			} catch (PSQLException e) {
-				throw new DuplicateUsernameException(e.getMessage());
+				throw new UserException(e.getMessage());
 			}
 		} catch (SQLException e) {
 			Logger logger = Logger.getLogger(DatabaseUserDAO.class);
 			logger.debug(e.getMessage());
 		}
 
-		throw new UserNotCreatedException();
+		throw new UserException();
 	}
 
 	public User updateUser(int userId, int roleId, String firstName, String lastName, String password)
-			throws UserNotFoundException, UserNotUpdatedException {
+			throws UserException {
 		String sqlQuery = "UPDATE users SET role_id = ?, first_name = ?, last_name = ?, password_hash = ? WHERE user_id = ?";
 
 		try (Connection connection = JDBCUtility.getConnection()) {
@@ -183,7 +179,7 @@ public class DatabaseUserDAO {
 			result = pstmt.executeUpdate();
 
 			if (result != 1) {
-				throw new UserNotUpdatedException("Update user failed - no rows were affected");
+				throw new UserException("Update user failed - no rows were affected");
 			}
 			connection.commit();
 
@@ -194,10 +190,10 @@ public class DatabaseUserDAO {
 			logger.debug(e.getMessage());
 		}
 
-		throw new UserNotUpdatedException();
+		throw new UserException();
 	}
 
-	public void deleteUser(int userId) throws UserNotDeletedException {
+	public void deleteUser(int userId) throws UserException {
 		String sqlQuery = "DELETE FROM users WHERE user_id = ?";
 
 		try (Connection connection = JDBCUtility.getConnection()) {
@@ -213,7 +209,7 @@ public class DatabaseUserDAO {
 			result = pstmt.executeUpdate();
 
 			if (result != 1) {
-				throw new UserNotDeletedException("Delete user failed - no rows were affected");
+				throw new UserException("Delete user failed - no rows were affected");
 			}
 			connection.commit();
 
@@ -248,7 +244,7 @@ public class DatabaseUserDAO {
 		return false;
 	}
 
-	User createUserFromResultSet(ResultSet rs) throws SQLException, UserNotFoundException {
+	User createUserFromResultSet(ResultSet rs) throws SQLException, UserException {
 
 		if (rs.next()) {
 			int userId = rs.getInt(1);
@@ -260,7 +256,7 @@ public class DatabaseUserDAO {
 
 			return new User(userId, firstName, lastName, username, new Role(roleId, roleName));
 		} else {
-			throw new UserNotFoundException("User not found.");
+			throw new UserException("User not found.");
 		}
 	}
 }

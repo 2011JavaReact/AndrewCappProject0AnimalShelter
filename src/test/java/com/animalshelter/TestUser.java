@@ -1,11 +1,8 @@
 package com.animalshelter;
 
 import com.animalshelter.dao.DatabaseUserDAO;
-import com.animalshelter.exception.DuplicateUsernameException;
 import com.animalshelter.exception.RoleNotFoundException;
-import com.animalshelter.exception.UserNotCreatedException;
-import com.animalshelter.exception.UserNotFoundException;
-import com.animalshelter.exception.UserNotUpdatedException;
+import com.animalshelter.exception.UserException;
 import com.animalshelter.model.Role;
 import com.animalshelter.model.User;
 import com.animalshelter.service.UsersService;
@@ -64,7 +61,7 @@ public class TestUser {
 	}
 
 	@Test
-	public void testGetUserById() throws IOException, UserNotFoundException {
+	public void testGetUserById() throws IOException, UserException {
 
 		usersService.setRequestKey("userid");
 		usersService.setRequestValue("1");
@@ -76,7 +73,7 @@ public class TestUser {
 	}
 
 	@Test
-	public void testGetUserByIdResultKeyException() throws IOException, UserNotFoundException {
+	public void testGetUserByIdResultKeyException() throws IOException, UserException {
 		usersService.setRequestKey("user_id");
 		usersService.setRequestValue("1");
 		Assert.assertThrows(IOException.class, () -> {
@@ -85,7 +82,7 @@ public class TestUser {
 	}
 
 	@Test
-	public void testGetUserByUsername() throws IOException, UserNotFoundException {
+	public void testGetUserByUsername() throws IOException, UserException {
 
 		usersService.setRequestKey("username");
 		usersService.setRequestValue("andrew");
@@ -96,7 +93,7 @@ public class TestUser {
 	}
 
 	@Test
-	public void testGetAllUsers() throws UserNotFoundException {
+	public void testGetAllUsers() throws UserException {
 
 		when(userDAOMock.getAllUsers()).thenReturn(testUsers);
 
@@ -104,7 +101,7 @@ public class TestUser {
 	}
 
 	@Test
-	public void testCreateNewUser() throws UserNotCreatedException, RoleNotFoundException, UserNotFoundException, DuplicateUsernameException {
+	public void testCreateNewUser() throws UserException, RoleNotFoundException {
 		
 		when(userDAOMock.createUser(anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(testUser3);
 		
@@ -113,7 +110,7 @@ public class TestUser {
 	}
 
 	@Test
-	public void testUpdateUser() throws UserNotFoundException, UserNotUpdatedException, RoleNotFoundException {
+	public void testUpdateUser() throws UserException, RoleNotFoundException {
 		when(userDAOMock.updateUser(anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(testUser3);
 		
 		Assert.assertEquals(usersService.updateUser(userTemplate1, 1), testUser3);

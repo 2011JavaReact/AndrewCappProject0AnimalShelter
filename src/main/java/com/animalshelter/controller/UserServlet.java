@@ -13,12 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.postgresql.util.PSQLException;
 
-import com.animalshelter.exception.DuplicateUsernameException;
 import com.animalshelter.exception.RoleNotFoundException;
-import com.animalshelter.exception.UserNotCreatedException;
-import com.animalshelter.exception.UserNotDeletedException;
-import com.animalshelter.exception.UserNotFoundException;
-import com.animalshelter.exception.UserNotUpdatedException;
+import com.animalshelter.exception.UserException;
 import com.animalshelter.model.User;
 import com.animalshelter.service.UsersService;
 import com.animalshelter.template.UserTemplate;
@@ -61,7 +57,7 @@ public class UserServlet extends HttpServlet {
 				Logger logger = Logger.getLogger(UserServlet.class);
 				logger.debug(e.toString() + " QueryString: " + request.getPathInfo());
 
-			} catch (UserNotFoundException e) {
+			} catch (UserException e) {
 				response.setStatus(404);
 
 				Logger logger = Logger.getLogger(UserServlet.class);
@@ -105,9 +101,9 @@ public class UserServlet extends HttpServlet {
 			logger.info("Inserted User in table users - ID: " + insertedUser.getUserId() + " Name: "
 					+ insertedUser.getFirstName() + " " + insertedUser.getLastName());
 
-		} catch (UserNotCreatedException e) {
+		} catch (UserException e) {
 			Logger logger = Logger.getLogger(UserServlet.class);
-			logger.debug("Error creating user: " + e.getMessage());
+			logger.debug(e.getMessage());
 			response.setStatus(400);
 
 		} catch (RoleNotFoundException e) {
@@ -115,16 +111,7 @@ public class UserServlet extends HttpServlet {
 			logger.debug("Error creating role: " + e.getMessage());
 			response.setStatus(400);
 
-		} catch (UserNotFoundException e) {
-			Logger logger = Logger.getLogger(UserServlet.class);
-			logger.debug("User Not Found: " + e.getMessage());
-			response.setStatus(400);
-
-		} catch (DuplicateUsernameException e) {
-			Logger logger = Logger.getLogger(UserServlet.class);
-			logger.debug(e.getMessage());
-			response.setStatus(400);
-		}
+		} 
 	}
 
 	// Update User - does not allow changing username
@@ -166,20 +153,16 @@ public class UserServlet extends HttpServlet {
 					logger.debug("Error creating role: " + e.getMessage());
 					response.setStatus(400);
 
-				} catch (UserNotFoundException e) {
-					Logger logger = Logger.getLogger(UserServlet.class);
-					logger.debug("User Not Found: " + e.getMessage());
-				} catch (UserNotUpdatedException e) {
+				} catch (UserException e) {
 					Logger logger = Logger.getLogger(UserServlet.class);
 					logger.debug(e.getMessage());
-					response.setStatus(400);
-				}
+				} 
 			} catch (IOException e) {
 				response.setStatus(400);
 				Logger logger = Logger.getLogger(UserServlet.class);
 				logger.debug(e.toString() + " QueryString: " + request.getPathInfo());
 
-			} catch (UserNotFoundException e) {
+			} catch (UserException e) {
 				response.setStatus(404);
 				Logger logger = Logger.getLogger(UserServlet.class);
 				logger.debug(e.toString() + " URI: " + request.getPathInfo());
@@ -203,7 +186,7 @@ public class UserServlet extends HttpServlet {
 				Logger logger = Logger.getLogger(UserServlet.class);
 				logger.info("Deleted User in table users - ID: " + request.getPathInfo().split("/")[1]);
 				
-			} catch (UserNotDeletedException e) {
+			} catch (UserException e) {
 				response.setStatus(404);
 				Logger logger = Logger.getLogger(UserServlet.class);
 				logger.debug(e.toString() + " URI: " + request.getPathInfo());
@@ -220,7 +203,7 @@ public class UserServlet extends HttpServlet {
 	// Utility method to return an instance of a User based on a user ID
 
 	public User getUserById(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, UserNotFoundException {
+			throws IOException, UserException {
 
 		return new UsersService("userid", request.getPathInfo().split("/")[1]).findUser();
 	}
