@@ -20,14 +20,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Servlet implementation class UserSessionServlet
  */
-@WebServlet("/login")
-public class LoginServlet extends HttpServlet {
+@WebServlet(urlPatterns = { "/login", "/logout" } )
+public class SessionServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public LoginServlet() {
+	public SessionServlet() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -73,16 +73,32 @@ public class LoginServlet extends HttpServlet {
 			PrintWriter pwriter = response.getWriter();
 			pwriter.print("<h2>Welcome " + userSession.getUsername() + "!</h2>");
 			pwriter.close();
-			Logger logger = Logger.getLogger(LoginServlet.class);
+			Logger logger = Logger.getLogger(SessionServlet.class);
 			logger.info(userSession.getUsername() + " Logged in.");
 
 		} else {
 
-			Logger logger = Logger.getLogger(LoginServlet.class);
+			Logger logger = Logger.getLogger(SessionServlet.class);
 			logger.debug("Bad username or password: " + userSession.getUsername());
 			response.setStatus(401);
 		}
 
+	}
+	
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		if (request.getSession().getAttribute("username") == null) {
+			response.setStatus(400);
+			response.getWriter().print("Error - not logged in yet");
+		} else {
+			Logger logger = Logger.getLogger(SessionServlet.class);
+			logger.info(request.getSession().getAttribute("username") + " Logged out.");
+
+			request.getSession().invalidate();
+			response.getWriter().print("Successfully Logged Out!");
+		}
+	
 	}
 
 }
