@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.animalshelter.StartAnimalShelter;
-import com.animalshelter.dao.DatabaseUserDAO;
 import com.animalshelter.exception.UserException;
 import com.animalshelter.model.User;
 import com.animalshelter.service.UsersService;
@@ -31,7 +29,6 @@ public class UsersServlet extends HttpServlet {
 	 */
 	public UsersServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	ObjectMapper objectMapper = new ObjectMapper();
@@ -39,11 +36,12 @@ public class UsersServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		if (request.getQueryString() != null) {
+		if (request.getParameterNames().hasMoreElements()) {
 
-			String requestKey = request.getQueryString().split("=")[0];
-			String requestValue = request.getQueryString().split("=")[1];
+			String requestKey = request.getParameterNames().nextElement();
+			String requestValue = request.getParameter(requestKey);
 
+			// Only allow one parameter at this time (username, lastname, or userid)
 			try {
 				User user = new UsersService(requestKey, requestValue).findUser();
 

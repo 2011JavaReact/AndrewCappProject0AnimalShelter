@@ -31,7 +31,6 @@ public class AnimalsServlet extends HttpServlet {
 	 */
 	public AnimalsServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -43,20 +42,12 @@ public class AnimalsServlet extends HttpServlet {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		if (request.getQueryString() != null) {
+		if (request.getParameterNames().hasMoreElements()) {
 
-			String requestKey = request.getQueryString().split("=")[0];
-			String requestValue;
-
-			// Allows for up to two words in query string joined by &
-
-			if (request.getQueryString().split("=")[1].split("&").length > 1) {
-				requestValue = request.getQueryString().split("=")[1].split("&")[0] + " "
-						+ request.getQueryString().split("=")[1].split("&")[1];
-			} else {
-				requestValue = request.getQueryString().split("=")[1];
-			}
-
+			String requestKey = request.getParameterNames().nextElement();
+			String requestValue = request.getParameter(requestKey);
+			
+			// Only allow one query string for searching animals - will ignore additional query strings
 			try {
 				ArrayList<Animal> animals = new AnimalsService(requestKey, requestValue).getAnimalsByRequestKey();
 
@@ -78,8 +69,8 @@ public class AnimalsServlet extends HttpServlet {
 
 				// Use below items to view environment variables or current working directory
 				// for log file
-					// System.out.println(System.getenv("HOME"));
-					// System.out.println(System.getProperty("user.dir"));
+				// System.out.println(System.getenv("HOME"));
+				// System.out.println(System.getProperty("user.dir"));
 			}
 
 		} else {
