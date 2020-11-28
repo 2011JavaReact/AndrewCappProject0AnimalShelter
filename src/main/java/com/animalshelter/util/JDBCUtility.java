@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
 import org.postgresql.Driver;
+
+import com.animalshelter.controller.UserServlet;
 
 public class JDBCUtility {
 
-	public static Connection getConnection() throws SQLException {
+	public static Connection getConnection() {
 
 		/*
 		 * Using local PostgreSQL database
@@ -20,13 +23,25 @@ public class JDBCUtility {
 		String url = "jdbc:postgresql://localhost:5432/postgres";
 		String username = "postgres";
 		String password = "amc111!";
-
+		Driver postgresqlDriver = new Driver();
 		Connection connection = null;
 
-		DriverManager.registerDriver(new Driver());
-		connection = DriverManager.getConnection(url, username, password);
+		try {
+			DriverManager.registerDriver(postgresqlDriver);
+			connection = DriverManager.getConnection(url, username, password);
+
+		} catch (SQLException e) {
+			Logger logger = Logger.getLogger(UserServlet.class);
+			logger.debug("Error registering database driver: " + e.getMessage());
+		} finally {
+			try {
+				DriverManager.deregisterDriver(postgresqlDriver);
+			} catch (SQLException e) {
+				Logger logger = Logger.getLogger(UserServlet.class);
+				logger.debug("Error UN-registering database driver: " + e.getMessage());
+			}
+		}
 
 		return connection;
-
 	}
 }
