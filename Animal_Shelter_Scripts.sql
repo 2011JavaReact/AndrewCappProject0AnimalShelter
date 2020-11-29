@@ -13,7 +13,8 @@ CREATE TABLE users (
 	first_name varchar(50),
 	last_name varchar(50),
 	username varchar(25) UNIQUE NOT NULL,
-	password_hash varchar(25),
+	salt varchar(255),
+	password_hash varchar(255),
 	PRIMARY KEY(user_id),
 	FOREIGN KEY(role_id)
 		REFERENCES roles(role_id)

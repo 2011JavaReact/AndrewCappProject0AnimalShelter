@@ -1,8 +1,16 @@
 package com.animalshelter.service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 import com.animalshelter.dao.DatabaseRoleDAO;
 import com.animalshelter.dao.DatabaseUserDAO;
@@ -57,35 +65,54 @@ public class UsersService {
 		return users;
 	}
 
-	public User createNewUser(UserTemplate createUserObject)
-			throws UserException, RoleNotFoundException, UserException {
+	public User createNewUser(UserTemplate createUserObject) throws UserException, RoleNotFoundException, UserException,
+			NoSuchAlgorithmException, InvalidKeySpecException {
 
 		// First get a role object based on the input. If not admin role name will
 		// default to user.
 
 		Role roleObject = new RolesService().findRoleByName(createUserObject.getRoleName());
 
+		// Generate random salt for password
+		SecureRandom random = new SecureRandom();
+		byte[] salt = new byte[16];
+		random.nextBytes(salt);
+
+		// Hash password using PBKDF2 + salt
+		KeySpec spec = new PBEKeySpec(createUserObject.getPassword().toCharArray(), salt, 131072, 128);
+		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		byte[] hashedPassword = factory.generateSecret(spec).getEncoded();
+
 		// Create user based on input and roleObject returned
 
 		User createdUserObject = userDAO.createUser(roleObject.getRoleId(), createUserObject.getFirstName(),
-				createUserObject.getLastName(), createUserObject.getUsername(), createUserObject.getPassword());
+				createUserObject.getLastName(), createUserObject.getUsername(), salt, hashedPassword);
 
 		return createdUserObject;
 	}
 
-	public User updateUser(UserTemplate updateUserObject, int userId)
-			throws RoleNotFoundException, UserException {
+	public User updateUser(UserTemplate updateUserObject, int userId) throws RoleNotFoundException, UserException, NoSuchAlgorithmException, InvalidKeySpecException {
 
 		// First get a role object based on the input. If not admin role name will
 		// default to user.
 
 		Role roleObject = new RolesService().findRoleByName(updateUserObject.getRoleName());
 
+		// Generate random salt for new password
+		SecureRandom random = new SecureRandom();
+		byte[] salt = new byte[16];
+		random.nextBytes(salt);
+
+		// Hash password using PBKDF2 + salt
+		KeySpec spec = new PBEKeySpec(updateUserObject.getPassword().toCharArray(), salt, 131072, 128);
+		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		byte[] hashedPassword = factory.generateSecret(spec).getEncoded();
+
 		// Update user based on input and roleObject returned
 		// Note: username cannot be changed
 
 		User updatedUserObject = userDAO.updateUser(userId, roleObject.getRoleId(), updateUserObject.getFirstName(),
-				updateUserObject.getLastName(), updateUserObject.getPassword());
+				updateUserObject.getLastName(), salt, hashedPassword);
 
 		return updatedUserObject;
 

@@ -2,6 +2,8 @@ package com.animalshelter.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -92,7 +94,9 @@ public class UserServlet extends HttpServlet {
 		UserTemplate createUserObject = objectMapper.readValue(jsonRequestBody, UserTemplate.class);
 
 		try {
+
 			User insertedUser = new UsersService().createNewUser(createUserObject);
+
 			response.getWriter().append(objectMapper.writeValueAsString(insertedUser));
 			response.setContentType("application/json");
 			response.setStatus(201);
@@ -101,6 +105,9 @@ public class UserServlet extends HttpServlet {
 			logger.info("Inserted User in table users - ID: " + insertedUser.getUserId() + " Name: "
 					+ insertedUser.getFirstName() + " " + insertedUser.getLastName());
 
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+			Logger logger = Logger.getLogger(UserServlet.class);
+			logger.debug(e.getMessage());
 		} catch (UserException e) {
 			Logger logger = Logger.getLogger(UserServlet.class);
 			logger.debug(e.getMessage());
@@ -111,7 +118,7 @@ public class UserServlet extends HttpServlet {
 			logger.debug("Error creating role: " + e.getMessage());
 			response.setStatus(400);
 
-		} 
+		}
 	}
 
 	// Update User - does not allow changing username
@@ -148,6 +155,10 @@ public class UserServlet extends HttpServlet {
 					logger.info("Updated User in table users - ID: " + updatedUser.getUserId() + " Name: "
 							+ updatedUser.getFirstName() + " " + updatedUser.getLastName());
 
+				} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+					Logger logger = Logger.getLogger(UserServlet.class);
+					logger.debug(e.getMessage());
+
 				} catch (RoleNotFoundException e) {
 					Logger logger = Logger.getLogger(UserServlet.class);
 					logger.debug("Error creating role: " + e.getMessage());
@@ -156,7 +167,7 @@ public class UserServlet extends HttpServlet {
 				} catch (UserException e) {
 					Logger logger = Logger.getLogger(UserServlet.class);
 					logger.debug(e.getMessage());
-				} 
+				}
 			} catch (IOException e) {
 				response.setStatus(400);
 				Logger logger = Logger.getLogger(UserServlet.class);
@@ -182,10 +193,10 @@ public class UserServlet extends HttpServlet {
 			try {
 				new UsersService("userid", request.getPathInfo().split("/")[1]).deleteUser();
 				response.setStatus(200);
-				
+
 				Logger logger = Logger.getLogger(UserServlet.class);
 				logger.info("Deleted User in table users - ID: " + request.getPathInfo().split("/")[1]);
-				
+
 			} catch (UserException e) {
 				response.setStatus(404);
 				Logger logger = Logger.getLogger(UserServlet.class);

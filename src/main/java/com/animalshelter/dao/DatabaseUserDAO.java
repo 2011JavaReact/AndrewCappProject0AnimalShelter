@@ -33,7 +33,7 @@ public class DatabaseUserDAO {
 				String firstName = rs.getString(3);
 				String lastName = rs.getString(4);
 				String username = rs.getString(5);
-				String roleName = rs.getString(8);
+				String roleName = rs.getString(9);
 
 				users.add(new User(userId, firstName, lastName, username, new Role(roleId, roleName)));
 
@@ -111,10 +111,10 @@ public class DatabaseUserDAO {
 
 	}
 
-	public User createUser(int roleId, String firstName, String lastName, String username, String password)
+	public User createUser(int roleId, String firstName, String lastName, String username, byte[] salt, byte[] hashedPassword)
 			throws UserException {
-		String sqlQuery = "INSERT INTO users (role_id, first_name, last_name, username, password_hash) "
-				+ "VALUES (?, ?, ?, ?, ?)";
+		String sqlQuery = "INSERT INTO users (role_id, first_name, last_name, username, salt, password_hash) "
+				+ "VALUES (?, ?, ?, ?, ?, ?)";
 
 		try (Connection connection = JDBCUtility.getConnection()) {
 
@@ -127,7 +127,8 @@ public class DatabaseUserDAO {
 			pstmt.setString(2, firstName);
 			pstmt.setString(3, lastName);
 			pstmt.setString(4, username);
-			pstmt.setString(5, password);
+			pstmt.setBytes(5, salt);
+			pstmt.setBytes(6, hashedPassword);
 
 			try {
 				result = pstmt.executeUpdate();
@@ -159,9 +160,9 @@ public class DatabaseUserDAO {
 		throw new UserException();
 	}
 
-	public User updateUser(int userId, int roleId, String firstName, String lastName, String password)
+	public User updateUser(int userId, int roleId, String firstName, String lastName, byte[] salt, byte[] hashedPassword)
 			throws UserException {
-		String sqlQuery = "UPDATE users SET role_id = ?, first_name = ?, last_name = ?, password_hash = ? WHERE user_id = ?";
+		String sqlQuery = "UPDATE users SET role_id = ?, first_name = ?, last_name = ?, salt = ?, password_hash = ? WHERE user_id = ?";
 
 		try (Connection connection = JDBCUtility.getConnection()) {
 
@@ -173,8 +174,9 @@ public class DatabaseUserDAO {
 			pstmt.setInt(1, roleId);
 			pstmt.setString(2, firstName);
 			pstmt.setString(3, lastName);
-			pstmt.setString(4, password);
-			pstmt.setInt(5, userId);
+			pstmt.setBytes(4, salt);
+			pstmt.setBytes(5, hashedPassword);
+			pstmt.setInt(6, userId);
 
 			result = pstmt.executeUpdate();
 
@@ -252,7 +254,7 @@ public class DatabaseUserDAO {
 			String firstName = rs.getString(3);
 			String lastName = rs.getString(4);
 			String username = rs.getString(5);
-			String roleName = rs.getString(8);
+			String roleName = rs.getString(9);
 
 			return new User(userId, firstName, lastName, username, new Role(roleId, roleName));
 		} else {

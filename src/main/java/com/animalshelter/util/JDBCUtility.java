@@ -20,9 +20,15 @@ public class JDBCUtility {
 		// Hard coded the database username and password.
 		// In the future need to move these to environment variables
 
-		String url = "jdbc:postgresql://localhost:5432/postgres";
+		// AWS RDS database settings
+		String url = "jdbc:postgresql://animal-shelter.cgc2dgdtlyfw.us-west-1.rds.amazonaws.com:5432/animalshelter1";
 		String username = "postgres";
-		String password = "amc111!";
+		String password = "dbAMC111!";
+		
+		// Local database settings
+//		String url = "jdbc:postgresql://localhost:5432/postgres";
+//		String username = "postgres";
+//		String password = "amc111!";
 		Driver postgresqlDriver = new Driver();
 		Connection connection = null;
 
