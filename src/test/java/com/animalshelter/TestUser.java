@@ -8,18 +8,20 @@ import com.animalshelter.model.User;
 import com.animalshelter.service.UsersService;
 import com.animalshelter.template.UserTemplate;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 public class TestUser {
 	private User testUser1, testUser2, testUser3;
@@ -101,17 +103,17 @@ public class TestUser {
 	}
 
 	@Test
-	public void testCreateNewUser() throws UserException, RoleNotFoundException {
+	public void testCreateNewUser() throws UserException, RoleNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
 		
-		when(userDAOMock.createUser(anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(testUser3);
+		when(userDAOMock.createUser(anyInt(), anyString(), anyString(), anyString(), any(byte[].class), anyString())).thenReturn(testUser3);
 		
 		Assert.assertEquals(usersService.createNewUser(userTemplate1), testUser3);
 		
 	}
 
 	@Test
-	public void testUpdateUser() throws UserException, RoleNotFoundException {
-		when(userDAOMock.updateUser(anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(testUser3);
+	public void testUpdateUser() throws UserException, RoleNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
+		when(userDAOMock.updateUser(anyInt(), anyInt(), anyString(), anyString(), any(byte[].class), anyString())).thenReturn(testUser3);
 		
 		Assert.assertEquals(usersService.updateUser(userTemplate1, 1), testUser3);
 	}
