@@ -5,8 +5,9 @@ import java.util.ArrayList;
 public class User {
 	
 	private int userId;
-	private String firstName, lastName, username, password;
+	private String firstName, lastName, username, password, hashedPassword;
 	private Role role;
+	private byte[] salt = null;
 	
 	public User() {
 
@@ -26,6 +27,16 @@ public class User {
 		this.username = username;
 		this.role = role;
 								
+	}
+	
+	public User(int userId, String firstName, String lastName, String username, byte[] salt, String hashedPassword, Role role) {
+		this.userId = userId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.username = username;
+		this.salt = salt;
+		this.hashedPassword = hashedPassword;
+		this.role = role;				
 	}
 
 	public int getUserId() {
@@ -70,6 +81,14 @@ public class User {
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	public void setSalt(byte[] salt) {
+		this.salt = salt;
+	}
+
+	public void setHashedPassword(String hashedPassword) {
+		this.hashedPassword = hashedPassword;
 	}
 
 	@Override

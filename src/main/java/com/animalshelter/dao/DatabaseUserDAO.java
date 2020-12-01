@@ -1,12 +1,21 @@
 package com.animalshelter.dao;
 
 import java.sql.Statement;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
+import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
 import org.postgresql.util.PSQLException;
 
@@ -111,8 +120,8 @@ public class DatabaseUserDAO {
 
 	}
 
-	public User createUser(int roleId, String firstName, String lastName, String username, byte[] salt, byte[] hashedPassword)
-			throws UserException {
+	public User createUser(int roleId, String firstName, String lastName, String username, byte[] salt,
+			String hashedPassword) throws UserException {
 		String sqlQuery = "INSERT INTO users (role_id, first_name, last_name, username, salt, password_hash) "
 				+ "VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -128,7 +137,7 @@ public class DatabaseUserDAO {
 			pstmt.setString(3, lastName);
 			pstmt.setString(4, username);
 			pstmt.setBytes(5, salt);
-			pstmt.setBytes(6, hashedPassword);
+			pstmt.setString(6, hashedPassword);
 
 			try {
 				result = pstmt.executeUpdate();
@@ -160,8 +169,8 @@ public class DatabaseUserDAO {
 		throw new UserException();
 	}
 
-	public User updateUser(int userId, int roleId, String firstName, String lastName, byte[] salt, byte[] hashedPassword)
-			throws UserException {
+	public User updateUser(int userId, int roleId, String firstName, String lastName, byte[] salt,
+			String hashedPassword) throws UserException {
 		String sqlQuery = "UPDATE users SET role_id = ?, first_name = ?, last_name = ?, salt = ?, password_hash = ? WHERE user_id = ?";
 
 		try (Connection connection = JDBCUtility.getConnection()) {
@@ -175,7 +184,7 @@ public class DatabaseUserDAO {
 			pstmt.setString(2, firstName);
 			pstmt.setString(3, lastName);
 			pstmt.setBytes(4, salt);
-			pstmt.setBytes(5, hashedPassword);
+			pstmt.setString(5, hashedPassword);
 			pstmt.setInt(6, userId);
 
 			result = pstmt.executeUpdate();
@@ -222,28 +231,49 @@ public class DatabaseUserDAO {
 
 	}
 
-	public Boolean validUsername(String username, String password) {
-		String sqlQuery = "SELECT * FROM users WHERE username = ? and password_hash = ? LIMIT 1";
-
+	public User validateUser(String username, String password) throws UserException, NoSuchAlgorithmException, InvalidKeySpecException {
+		String sqlQuery = "SELECT user_id, username, salt, password_hash FROM users WHERE username = ? LIMIT 1";
+		String hashedPassword;
+		byte[] salt;
+		int userId;
 		try (Connection connection = JDBCUtility.getConnection()) {
 
-			PreparedStatement pstmt = connection.prepareStatement(sqlQuery);
-			pstmt.setString(1, username);
-			pstmt.setString(2, password);
+			try (PreparedStatement pstmt = connection.prepareStatement(sqlQuery)) {
 
-			ResultSet resultSet = pstmt.executeQuery();
+				pstmt.setString(1, username);
+				ResultSet resultSet = pstmt.executeQuery();
 
-			if (resultSet.next()) {
-				return true;
-			} else {
-				return false;
-			}
+				resultSet.next();
+				userId = resultSet.getInt("user_id");
+				salt = resultSet.getBytes("salt");
+				hashedPassword = resultSet.getString("password_hash");
+				
+				if (hashedPassword.equals(hashingMethod(password, salt))) {
+					return findUserById("user_id", userId);
+				} else {
+					throw new UserException("Password does not match.");
+				}
+			} catch (UserException e) {
+			throw new UserException("Username not found.");
+		}
 
-		} catch (SQLException e) {
+	} catch (SQLException e) {
 			Logger logger = Logger.getLogger(DatabaseUserDAO.class);
 			logger.debug(e.getMessage());
 		}
-		return false;
+	
+	throw new UserException("User not found.");
+	}
+
+	public String hashingMethod(String password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		
+		// Hash password using SHA + salt
+		MessageDigest md = MessageDigest.getInstance("SHA-512");
+		md.update(salt);
+		byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
+		String passwordHashString = Hex.encodeHexString(hashedPassword);
+
+		return passwordHashString;
 	}
 
 	User createUserFromResultSet(ResultSet rs) throws SQLException, UserException {
@@ -254,9 +284,12 @@ public class DatabaseUserDAO {
 			String firstName = rs.getString(3);
 			String lastName = rs.getString(4);
 			String username = rs.getString(5);
+			byte[] salt = rs.getBytes(6);
+			String hashedPassword = rs.getString(7);
+
 			String roleName = rs.getString(9);
 
-			return new User(userId, firstName, lastName, username, new Role(roleId, roleName));
+			return new User(userId, firstName, lastName, username, salt, hashedPassword, new Role(roleId, roleName));
 		} else {
 			throw new UserException("User not found.");
 		}

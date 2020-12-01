@@ -1,6 +1,15 @@
 package com.animalshelter.service;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
 import com.animalshelter.dao.DatabaseUserDAO;
+import com.animalshelter.exception.UserException;
+import com.animalshelter.model.User;
 
 public class SessionsService {
 
@@ -32,8 +41,9 @@ public class SessionsService {
 		this.password = password;
 	}
 
-	public Boolean validateUser() {
-		return new DatabaseUserDAO().validUsername(getUsername(), getPassword());
+	public User validateUser() throws UserException, NoSuchAlgorithmException, InvalidKeySpecException {
+		return new DatabaseUserDAO().validateUser(getUsername(), getPassword());
+		
 	}
 	
 	@Override

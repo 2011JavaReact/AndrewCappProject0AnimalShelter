@@ -13,7 +13,7 @@ CREATE TABLE users (
 	first_name varchar(50),
 	last_name varchar(50),
 	username varchar(25) UNIQUE NOT NULL,
-	salt varchar(255),
+	salt bytea,
 	password_hash varchar(255),
 	PRIMARY KEY(user_id),
 	FOREIGN KEY(role_id)

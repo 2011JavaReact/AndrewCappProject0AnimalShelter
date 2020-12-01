@@ -2,6 +2,7 @@ package com.animalshelter.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.postgresql.util.PSQLException;
@@ -191,11 +193,37 @@ public class UserServlet extends HttpServlet {
 
 		if (request.getPathInfo().length() > 1) {
 			try {
-				new UsersService("userid", request.getPathInfo().split("/")[1]).deleteUser();
-				response.setStatus(200);
 
-				Logger logger = Logger.getLogger(UserServlet.class);
-				logger.info("Deleted User in table users - ID: " + request.getPathInfo().split("/")[1]);
+				// Check session to make sure role is 'Admin'. Otherwise unauthorized to delete
+				// user.
+				// If not logged in then will return a message to log in.
+
+				HttpSession session = request.getSession();
+				System.out.println(session.getAttribute("role"));
+
+				if (session.getAttribute("username") != null) {
+
+					if (!session.getAttribute("role").equals("Admin")) {
+						response.setStatus(401);
+						Logger logger = Logger.getLogger(UserServlet.class);
+						logger.info("Unauthorized Delete User Request by: " + session.getAttribute("username"));
+					} else {
+
+						new UsersService("userid", request.getPathInfo().split("/")[1]).deleteUser();
+						response.setStatus(200);
+
+						Logger logger = Logger.getLogger(UserServlet.class);
+						logger.info(session.getAttribute("username") + " Deleted User in table users - ID: " + request.getPathInfo().split("/")[1]);
+					}
+				} else {
+					response.setStatus(400);
+
+					response.setContentType("text/html");
+					PrintWriter pwriter = response.getWriter();
+					pwriter.print("Please log in to complete request!");
+					pwriter.close();
+
+				}
 
 			} catch (UserException e) {
 				response.setStatus(404);
