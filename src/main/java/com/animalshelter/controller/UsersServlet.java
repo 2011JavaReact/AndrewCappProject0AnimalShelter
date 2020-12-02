@@ -33,6 +33,8 @@ public class UsersServlet extends HttpServlet {
 
 	ObjectMapper objectMapper = new ObjectMapper();
 
+	// Get all users or search users by username, lastname, or userid.
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 

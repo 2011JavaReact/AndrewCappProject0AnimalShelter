@@ -199,7 +199,6 @@ public class UserServlet extends HttpServlet {
 				// If not logged in then will return a message to log in.
 
 				HttpSession session = request.getSession();
-				System.out.println(session.getAttribute("role"));
 
 				if (session.getAttribute("username") != null) {
 
@@ -213,7 +212,8 @@ public class UserServlet extends HttpServlet {
 						response.setStatus(200);
 
 						Logger logger = Logger.getLogger(UserServlet.class);
-						logger.info(session.getAttribute("username") + " Deleted User in table users - ID: " + request.getPathInfo().split("/")[1]);
+						logger.info(session.getAttribute("username") + " Deleted User in table users - ID: "
+								+ request.getPathInfo().split("/")[1]);
 					}
 				} else {
 					response.setStatus(400);
