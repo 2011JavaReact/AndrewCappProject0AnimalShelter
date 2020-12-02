@@ -14,7 +14,7 @@ public class HomeServlet extends HttpServlet {
 		throws ServletException, IOException {
 		// Implements GET behavior
 		
-		resp.getWriter().append("Animal Shelter on AWS EC-2");
+		resp.getWriter().append("Animal Shelter on AWS EC-2 testing Jenkins 1");
 		
 	}
 
