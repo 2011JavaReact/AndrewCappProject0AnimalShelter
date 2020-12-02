@@ -14,7 +14,7 @@ public class HomeServlet extends HttpServlet {
 		throws ServletException, IOException {
 		// Implements GET behavior
 		
-		resp.getWriter().append("Test Animal Shelter Tomcat Web Server");
+		resp.getWriter().append("Animal Shelter on AWS EC-2");
 		
 	}
 
