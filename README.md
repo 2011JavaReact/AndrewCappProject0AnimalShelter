@@ -180,6 +180,9 @@ Action: Deletes user based on {id}.
 
 Example: http://animalshelter/user/1/
 
+<ul>Constraints:
+<li>Must be logged in with 'Admin' role.</li>
+</ul>
 Response: Returns http status code `200 OK` if successful.
 
 ## Database Schema
