@@ -14,7 +14,7 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'cp /home/ec2-user/.jenkins/workspace/project0-animalshelter-backend/target/animalshelter.war /home/ec2-user/apache-tomcat-8.5.60/webapps/'
+                sh 'cp /home/ec2-user/.jenkins/workspace/animalshelterpipeline/target/animalshelter.war /home/ec2-user/apache-tomcat-8.5.60/webapps/'
             }
         }
     }
