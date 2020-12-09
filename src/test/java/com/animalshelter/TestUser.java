@@ -105,6 +105,8 @@ public class TestUser {
 	@Test
 	public void testCreateNewUser() throws UserException, RoleNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
 		
+		
+		
 		when(userDAOMock.createUser(anyInt(), anyString(), anyString(), anyString(), any(byte[].class), anyString())).thenReturn(testUser3);
 		
 		Assert.assertEquals(usersService.createNewUser(userTemplate1), testUser3);
