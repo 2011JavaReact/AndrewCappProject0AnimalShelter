@@ -41,7 +41,7 @@
 		<filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
 		<init-param>
 			<param-name>cors.allowed.origins</param-name>
-			<param-value>http://127.0.0.1:5501, http://localhost:3000, http://karl-revature-testing-buckets.s3-website-us-west-1.amazonaws.com</param-value>
+			<param-value>http://127.0.0.1:5501, http://localhost:3000, http://karl-revature-testing-buckets.s3-website-us-west-1.amazonaws.com, http://revature-karl-fur-haven-animal-shelter.s3-website-us-west-1.amazonaws.com</param-value>
 		</init-param>
 		<init-param>
 			<param-name>cors.allowed.methods</param-name>
