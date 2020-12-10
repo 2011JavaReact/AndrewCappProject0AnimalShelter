@@ -12,7 +12,7 @@ public class AnimalsService {
 	private DatabaseAnimalDAO animalDAO;
 
 	public AnimalsService() {
-		// this.animalDAO = new DatabaseAnimalDAO();
+		 this.animalDAO = new DatabaseAnimalDAO();
 	}
 
 	public AnimalsService(DatabaseAnimalDAO animalDAO) {
