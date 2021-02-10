@@ -25,6 +25,10 @@ public class AnimalsService {
 		this.animalDAO = new DatabaseAnimalDAO();
 	}
 
+	public ArrayList<String> getBreeds() throws Exception {
+		return animalDAO.getAllBreeds();
+	}
+	
 	public ArrayList<Animal> getAllAnimals() throws AnimalException {
 
 		return animalDAO.getAllAnimals();

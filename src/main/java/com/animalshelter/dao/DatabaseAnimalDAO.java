@@ -14,6 +14,21 @@ import com.animalshelter.util.JDBCUtility;
 
 public class DatabaseAnimalDAO {
 
+	public ArrayList<String> getAllBreeds() throws Exception {
+		String sqlQuery = "SELECT breed FROM animals";
+		ArrayList<String> a = new ArrayList<String>();
+		
+		try (Connection connection = JDBCUtility.getConnection()) {
+			ResultSet rs = connection.createStatement().executeQuery(sqlQuery);
+			
+			while (rs.next()) {
+				a.add(rs.getString(1));
+			}
+		}
+		
+		return a;
+	}
+	
 	public ArrayList<Animal> getAllAnimals() throws AnimalException {
 
 		String sqlQuery = "SELECT * FROM animals";
